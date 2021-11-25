@@ -11,14 +11,17 @@
     </div> -->
     <navi />
     <router-view />
+    <pagefooter />
   </div>
 </template>
 <script>
 import navi from '@/components/Nav.vue';
+import pagefooter from '@/components/Footer.vue';
 export default {
   name:'app',
   components:{
     navi,
+    pagefooter
   }
 }
 </script>
@@ -29,43 +32,39 @@ export default {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: Noto Sans;
+  font-family: Noto Sans,Noto serif TC;
 }
-img{
-  max-width: 100%;
-  height: auto;
-}
-.h1,.h2,.h3,.h4,.h5,.title,.subt1,.subt2,.b1,.b2,.b3,.cap{
+h1,h2,h3,h4,h5,caption,.h1,.h2,.h3,.h4,.h5,title,.title,.subt1,.subt2,.b1,.b2,.b3,.caption{
   font-style: normal;
   font-weight: bold;
   color: #000000;
 }
-.h1,.h2,.h3,.h4,.h5{
+h1,h2,h3,h4,h5,.h1,.h2,.h3,.h4,.h5{
   line-height: 1.25;
 }
-.title,.subt1,.subt2{
+title,.title,.subt1,.subt2{
   line-height: 1.5;
 }
-.b1,.b2,.b3,.cap{
+.b1,.b2,.b3,.caption{
   font-weight: normal;
   line-height: 1.5;
 }
-.h1{
+h1,.h1{
   font-size: 40px;
 }
-.h2{
+h2,.h2{
   font-size: 32px;
 }
-.h3{
+h3,.h3{
   font-size: 28px;
 }
-.h4{
+h4,.h4{
   font-size: 24px;
 }
-.h5{
+h5,.h5{
   font-size: 20px;
 }
-.title{
+title,.title{
   font-size: 18px;
 }
 .subt1{
@@ -83,8 +82,11 @@ img{
 .b3{
   font-size: 12px;
 }
-.cap{
+caption,.caption{
   font-size: 11px;
+}
+section{
+  padding: 80px 0px;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -93,16 +95,43 @@ img{
   text-align: center;
   color: #2c3e50;
 }
-.grid-container{
+.phone-device{
+    display: none;
+    @include phone-width{
+        display: initial;
+    }
+}
+.pc-device{
+    @include phone-width{
+        display: none;
+    }
+}
+.container{
   width: 1344px;
+  padding: 0px 16px;
   margin: auto;
+  @include phone-width{
+    width: 100%;
+    padding: 0px 15px;
+  }
+}
+.d-grid{
   display: grid;
   grid-template-columns: repeat(12, 2.5fr);
   column-gap: 32px;
-  padding: 16px;//11:16
+  @include phone-width{
+    grid-template-columns: repeat(4, 23.26%);
+    column-gap: 2.33%;
+  }
+  &.align-center{
+    align-items: center;
+  }
 }
 .d-flex{
   display: flex;
+}
+.d-block{
+  display: block;
 }
 .gg-search {
     box-sizing: border-box;
@@ -130,14 +159,14 @@ img{
     left: 12px
 }
 
-#nav {
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+// #nav {
+//   a {
+//     font-weight: bold;
+//     color: #2c3e50;
 
-    &.router-link-exact-active {
-      color: #ff5c00;
-    }
-  }
-}
+//     &.router-link-exact-active {
+//       color: #ff5c00;
+//     }
+//   }
+// }
 </style>

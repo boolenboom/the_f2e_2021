@@ -1,0 +1,12 @@
+$pcs-media: 1312px;
+$pc-media: 1311px;
+@mixin pc-width {
+    @media (min-width:$pcs-media) {
+        @content;
+    }
+}
+@mixin phone-width {
+    @media (max-width:$pc-media) {
+        @content;
+    }
+}

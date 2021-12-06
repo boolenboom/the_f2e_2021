@@ -2,14 +2,14 @@
     <div class="carousel">
         <div v-if="indicatorType === 'next/prev'" class="controlButtons d-flex">
             <button :disabled="currentIndex <= 0" class="button d-block" @click='buttonClickHandler(-1)'><img src="@/assets/icon/tool/arrow-left.png" class='d-block' alt="" srcset=""></button>
-            <button :disabled="currentIndex >= (cardsData.length / viewAmount) - 1" class="button d-block" @click='buttonClickHandler(1)'><img src="@/assets/icon/tool/arrow-right.png" class="d-block" alt="" srcset=""></button>
+            <button :disabled="currentIndex >= cardsData.length - 1" class="button d-block" @click='buttonClickHandler(1)'><img src="@/assets/icon/tool/arrow-right.png" class="d-block" alt="" srcset=""></button>
         </div>
-        <div class="list d-flex" :style="`--view-amount:${viewAmount}`" 
-        @pointerdown='slideHandler' 
-        @pointermove='slideHandler' 
-        @pointerup='slideHandler'
+        <div class="list d-flex"
+        @pointerdown.prevent='slideHandler' 
+        @pointermove.prevent='slideHandler' 
+        @pointerup.prevent='slideHandler'
         draggable="false">
-            <li v-for="cardData of cardsData" :key='cardData.id' :style="`--offset:${itemOffset}`" draggable="false">
+            <li v-for="cardData of cardsData" :key='cardData.id' :style="`--current-index:${currentIndex}`" draggable="false">
                 <slot name='items' :cardInfo='cardData'></slot>
             </li>
         </div>
@@ -55,14 +55,16 @@
     .list{
         height: 100%;
         overflow-x: hidden;
+        --view-amount: var(--custom-view);
+        --gap: var(--custom-gap);
         &:active{
             cursor: pointer;
         }
         > li{
             width: calc((100% / var(--view-amount)) - (32px * (var(--view-amount) - 1)) / var(--view-amount));
             flex: 0 0 calc((100% / var(--view-amount)) - (32px * (var(--view-amount) - 1)) / var(--view-amount));
-            margin-right: 32px;
-            transform: translateX(var(--offset));
+            margin-right: var(--gap);
+            transform: translateX(calc((100% * var(--current-index) + var(--gap) * var(--current-index)) * -1));
             transition: transform .2s linear;
         }
         *{
@@ -102,10 +104,10 @@ export default {
             type:Array,
             dafault:[]
         },
-        viewAmount:{
-            type:Number,
-            default:1
-        },
+        // viewAmount:{
+        //     type:Number,
+        //     default:1
+        // },
         indicatorType:{
             type:String,
             default:'point',
@@ -118,11 +120,6 @@ export default {
         return{
             currentIndex:0,
             carouselHandler:handlerConstructer()
-        }
-    },
-    computed:{
-        itemOffset(){
-            return `calc((100% * ${this.viewAmount} * ${this.currentIndex} + 32px * ${this.viewAmount} * ${this.currentIndex}) * -1)`;
         }
     },
     methods:{
@@ -140,12 +137,12 @@ export default {
     watch:{
         cardsData(newArr){
             console.log('watch upadte');
-            this.carouselHandler.setClampOption(true,0,(newArr.length / this.viewAmount)-1);
+            this.carouselHandler.setClampOption(true,0,newArr.length - 1);
         }
     },
     mounted(){
         console.log('mounted upadte',this.indicatorType);
-        this.carouselHandler.setClampOption(true,0,(this.cardsData.length / this.viewAmount) - 1);
+        this.carouselHandler.setClampOption(true,0,this.cardsData.length - 1);
     }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <ul class="info-class d-flex">
-            <li v-for="classTag,index of info.classTags" :key='index' class="class-tag">{{classTag}}</li>
+            <li v-for="classTag of info.classTags" :key='classTag' class="class-tag">{{classTag}}</li>
         </ul>
         <div class="pic">
             <img :src="info.imgSrc" alt="scenic spot image" srcset="">
@@ -42,8 +42,8 @@ export default {
                 classTags:classArr,
                 imgSrc:this.cardInfo.Picture.PictureUrl1,
                 restaurantName:this.cardInfo.RestaurantName || this.cardInfo.Name || '無活動名稱',
-                city:this.cardInfo.City,
-                phone:this.cardInfo.Phone,
+                city:this.cardInfo.City || this.cardInfo.Address,
+                phone:`${this.cardInfo.Phone}`.split(',')[0],
             }
         }
     }

@@ -19,10 +19,12 @@
 .card{
     width: 100%;
     position: relative;
+    --card-height:var(--hero-card-height,756px);
+    --text-posY:var(--hero-text-pos-y,,227px);
 }
 .pic{
     width: 100%;
-    height: 756px;
+    height: var(--card-height);
     z-index: -1;
     img{
         width: 100%;
@@ -38,8 +40,12 @@
 }
 .text{
     grid-column: 4/-4;
+    @include phone-width{
+        grid-column: 1/-2;
+        transform: translateX(16.67%);
+    }
     position: relative;
-    top: 227px;
+    top: var(--text-posY);
     h3,h1,h4{
         letter-spacing: .5em;
         color: #ffffff;
@@ -67,12 +73,6 @@ export default {
     props:{
         cardInfo:{
             type:Object,
-            default(){return{
-                imgSrc:'',
-                title:'',
-                subtitle:'',
-                para:''
-            };}
         }
     }
 }

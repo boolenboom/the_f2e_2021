@@ -15,31 +15,31 @@ function getAuthorizationHeader() {
     return { 'Authorization': Authorization, 'X-Date': GMTString }; 
 }
 let fetcher = function(THEME,CATEGORY,BASEURL){
-    let theme=THEME || 'Tourism' ,category=CATEGORY || 'Activity' ,otherParameters='' || 'Taipei';
+    let theme=THEME || 'Tourism' ,category=CATEGORY || 'Activity' ,otherParameters='';
     let $top = 30,$skip = 0;
     let $select='',$filter = '',$orderby='',$spatialFilter = '';
     let $format = 'JSON';
     let query='$top=30';
     let base= BASEURL || 'https://ptx.transportdata.tw/MOTC/v2/';
-    let url=`${base}${theme}/${category}/${otherParameters}?${query}`;
+    let url=`${base}${theme}/${category}${otherParameters?'/' + otherParameters:''}?${query}`;
     // let isLoaded=false;
     function queryParamCombine(setting){
-        console.group('query');
-        console.log(setting);
+        // console.group('query');
+        // console.log(setting);
         let keys = Object.keys(setting);
         let value = Object.values(setting);
         let combination = value.reduce((acc,curr,index)=>{
             return acc + (curr ? keys[index] + '=' + curr + '&' : '');
         },'')
-        console.log('query:' + combination);
-        console.groupEnd('query');
+        // console.log('query:' + combination);
+        // console.groupEnd('query');
         query = combination;
     };
     function urlUpdate(){
-        url=`${base}${theme}/${category}/${otherParameters}?${query}`;
-        console.group('fetchUrl');
-        console.log(url);
-        console.groupEnd('fetchUrl');
+        url=`${base}${theme}/${category}${otherParameters?'/' + otherParameters:''}?${query}`;
+        // console.group('fetchUrl');
+        // console.log(url);
+        // console.groupEnd('fetchUrl');
     };
     return {
         getHeader:function(){

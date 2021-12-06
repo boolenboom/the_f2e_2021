@@ -1,15 +1,21 @@
 <template>
     <div class="card">
         <ul class="info-class d-flex">
-            <li v-for="classTag,index of info.classTags" :key='index' class="class-tag">{{classTag}}</li>
+            <li v-for="classTag of info.classTags" :key='classTag' class="class-tag">{{classTag}}</li>
         </ul>
         <div class="pic">
             <img :src="info.imgSrc" alt="scenic spot image" srcset="">
         </div>
         <div class="textInfo" draggable="false">
             <h5  class="info-name">{{info.scenicspotName}}</h5>
-            <div class="info-city subt1 d-flex"><img src="@/assets/icon/inform/location.png" alt="location icon" srcset="" class="d-block"><span class="d-block">{{info.city}}</span></div>
-            <div class="info-openTime d-flex"><img src="@/assets/icon/inform/time.png" alt="time icon" srcset="" class="d-block"><span class="d-block">{{info.openTime}}</span></div>
+            <div class="info-city subt1 d-flex">
+                <img src="@/assets/icon/inform/location.png" alt="location icon" srcset="" class="d-block">
+                <span class="d-block">{{info.city}}</span>
+            </div>
+            <div class="info-openTime d-flex">
+                <img src="@/assets/icon/inform/time.png" alt="time icon" srcset="" class="d-block">
+                <span class="d-block">{{info.openTime}}</span>
+            </div>
         </div>
     </div>
 </template>
@@ -29,11 +35,13 @@ export default {
                 if(el!==undefined)classArr.push(el)
                 });
             return {
+                id:this.cardInfo.ID,
                 classTags:classArr,
                 imgSrc:this.cardInfo.Picture.PictureUrl1,
                 scenicspotName:this.cardInfo.ScenicspotName || this.cardInfo.Name || '無活動名稱',
-                city:this.cardInfo.City,
-                openTime:this.cardInfo.OpenTime,
+                city:this.cardInfo.Address || this.cardInfo.City,
+                openTime:this.cardInfo.OpenTime === 
+                'Sun 24 hours；Mon 24 hours；Tue 24 hours；Wed 24 hours；Thu 24 hours；Fri 24 hours；Sat 24 hours'? '全天候開放' : this.cardInfo.OpenTime,
             }
         }
     }

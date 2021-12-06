@@ -34,6 +34,9 @@ export default {
   box-sizing: border-box;
   font-family: Noto Sans,Noto serif TC;
 }
+body{
+  overflow-x: hidden;
+}
 h1,h2,h3,h4,h5,caption,.h1,.h2,.h3,.h4,.h5,title,.title,.subt1,.subt2,.b1,.b2,.b3,.caption{
   font-style: normal;
   font-weight: bold;
@@ -51,15 +54,24 @@ title,.title,.subt1,.subt2{
 }
 h1,.h1{
   font-size: 40px;
+  @include phone-width{
+    font-size: calc(28px + 2.3vw);
+  }
 }
 h2,.h2{
   font-size: 32px;
 }
 h3,.h3{
   font-size: 28px;
+  @include phone-width{
+    font-size: calc(12px + 2.1vw);
+  }
 }
 h4,.h4{
   font-size: 24px;
+  @include phone-width{
+    font-size: calc(12px + 2vw);
+  }
 }
 h5,.h5{
   font-size: 20px;
@@ -96,15 +108,15 @@ section{
   color: #2c3e50;
 }
 .phone-device{
-    display: none;
-    @include phone-width{
-        display: initial;
-    }
+  display: none;
+  @include phone-width{
+    display: initial;
+  }
 }
 .pc-device{
-    @include phone-width{
-        display: none;
-    }
+  @include phone-width{
+    display: none;
+  }
 }
 .container{
   width: 1344px;
@@ -158,15 +170,4 @@ section{
     top: 10px;
     left: 12px
 }
-
-// #nav {
-//   a {
-//     font-weight: bold;
-//     color: #2c3e50;
-
-//     &.router-link-exact-active {
-//       color: #ff5c00;
-//     }
-//   }
-// }
 </style>

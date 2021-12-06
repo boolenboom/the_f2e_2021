@@ -19,9 +19,9 @@
             <div class="menu d-flex" :class="{'menu-default':!switchName.menuFullpage}">
                 <button class="button-cancel" @click="SwitchHandler('menuFullpage',false)"><img src="../assets/icon/tool/close-white.png" alt="" srcset=""></button>
                 <ul class="pages d-flex">
-                    <li class="pageOption"><router-link to="/">活動介紹</router-link></li>
-                    <li class="pageOption"><router-link to="/">旅遊景點</router-link></li>
-                    <li class="pageOption"><router-link to="/about">特色美食</router-link></li>
+                    <li class="pageOption"><router-link to="/theme/Activity/1">活動介紹</router-link></li>
+                    <li class="pageOption"><router-link to="/theme/ScenicSpot/1">旅遊景點</router-link></li>
+                    <li class="pageOption"><router-link to="/theme/Restaurant/1">特色美食</router-link></li>
                 </ul>
                 <div class="condition-layout pc-device">
                     <keyword-search/>
@@ -42,7 +42,7 @@ li{
     position: sticky;
     transition: top .3s ease;
     background-color: #ffffff;
-    z-index: 99;
+    z-index: 500;
     .container{
         padding-top: 16px;
         padding-bottom: 16px;
@@ -101,9 +101,6 @@ li{
     grid-column: 3/ span 5;
     position: relative;
     transition: transform .3s ease;
-    &.menu-default{
-        transform: translateX(100%);
-    }
     @include phone-width{
         flex-direction: column;
         position: absolute;
@@ -113,6 +110,9 @@ li{
         width: 72.53%;
         padding: 16px 15px;
         background-color: #262626;
+        &.menu-default{
+            transform: translateX(100%);
+        }
     }
     .button-cancel{
         align-self: flex-end;
@@ -122,6 +122,7 @@ li{
         flex-direction: column;
         margin-top: 88px;
         @include pc-width{
+            margin-top: 0;
             flex-direction:row;
             position: absolute;
             top:5px;
@@ -134,14 +135,22 @@ li{
             border-radius: 20px;
             padding: 0 20px;
             background-color: #ffffff;
-        }
-        .pageOption{
-            *{
-                color: #ffffff;
+            .pageOption{
+                margin-top: 0;
+                a{
+                    color: #262626;
+                }
             }
         }
-        .pageOption+.pageOption{
-            margin-top: 24px;
+        @include phone-width{
+            .pageOption{
+                a{
+                    color: #ffffff;
+                }
+            }
+            .pageOption+.pageOption{
+                margin-top: 24px;
+            }
         }
     }
     .condition-layout{

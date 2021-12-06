@@ -2,7 +2,7 @@
     <section id="scenicspot">
         <div class="container">
             <h2 class="carouselName">熱門景點</h2>
-            <carousel :cardsData='JSONData' :viewAmount='amount' class="full-grid" indicatorType='next/prev'>
+            <carousel :cardsData='JSONData' class="full-grid" indicatorType='next/prev'>
                 <template v-slot:items='props'>
                     <scenicspotcard :cardInfo='props.cardInfo'/>
                 </template>
@@ -16,6 +16,12 @@
     background-color: #f6f6f6;
     position: relative;
     z-index: 1;
+    --custom-view:3;
+    --custom-gap:32px;
+    @include phone-width{
+        --custom-view:1;
+        --custom-gap:8px;
+    }
     .container{
         z-index: 10;
         .controlButtons{
@@ -47,20 +53,19 @@ export default {
     },
     data(){
         return{
-            amount:3,
             JSONData:[]
         }
     },
     mounted(){
         let vueObj=this;
-        fetcher.setQuery({top:15,select:'ID,Name,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture'});
+        fetcher.setQuery({top:5000,select:'ID,Name,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture'});
         fetch(fetcher.getUrl(),fetcher.getHeader())
         .then(function (response) {
             return response.json();
         })
         .then(function (data){
-            console.log(data.length);
-            vueObj.JSONData = data;
+            let filterData = Array.from(data).filter(el=>el.Picture?.PictureUrl1);
+            vueObj.JSONData = filterData.splice(0,14);
             // isLoaded=false;
         })
         .catch(function (error) {

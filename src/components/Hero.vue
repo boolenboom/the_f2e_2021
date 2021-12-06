@@ -1,18 +1,28 @@
 <template>
     <div id="hero">
-        <carousel :cardsData='heroJSON' :viewAmount='amount' indicatorType='point'>
+        <carousel :cardsData='heroJSON' indicatorType='point'>
             <template v-slot:items='props'>
                 <card :cardInfo='props.cardInfo'/>
             </template>
         </carousel>
     </div>
 </template>
+<style lang="scss">
+#hero{
+    --custom-view:1;
+    --custom-gap:32px;
+    @include phone-width{
+        --custom-view:1;
+        --custom-gap:8px;
+    }
+}
+</style>
 <script>
 import carousel from '@/components/Carousel.vue';
 import card from '@/components/Hero_Card.vue';
 import heroCardsJSON from '@/assets/JSON/hero.json';
-import hashImgs from '@/assets/filenameHashList.js';
-let imgArr = Array.from(hashImgs.heroImgs);
+import { heroImgs as hashImgs } from '@/assets/filenameHashList.js';
+let imgArr = Array.from(hashImgs);
 Array.from(heroCardsJSON).forEach(card=>{
     let index = +card.imgIndex;//string to unmber
     card.imgSrc = imgArr[index];
@@ -26,7 +36,6 @@ export default {
     data(){
         return{
             heroJSON:heroCardsJSON,
-            amount:1
         }
     }
 }

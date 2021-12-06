@@ -1,5 +1,5 @@
 <template>
-    <div class="card d-grid">
+    <div class="card d-grid overwrite">
         <div class="pic">
             <img :src="info.imgSrc" alt="activity image" srcset="">
         </div>
@@ -7,20 +7,80 @@
             <h3 class="info-name">{{info.activityName}}</h3>
             <h3 class="info-duration">{{info.duration}}</h3>
             <ul class="info-class d-flex">
-                <li v-for="classTag,index of info.classTags" :key='index' class="class-tag">{{classTag}}</li>
+                <li v-for="classTag of info.classTags" :key='classTag' class="class-tag">{{classTag}}</li>
             </ul>
             <div class="info-organizer subt1">主辦單位：{{info.organizer}}</div>
-            <p class="info-intro b1" :class="{'text-overflow':info.desc.length > 100}">{{info.desc}}</p>
-            <div class="info-detail title"><router-link to="#">詳細介紹</router-link></div>
+            <p class="info-intro b1 pc-device" :class="{'text-overflow':info.desc.length > 100}">{{info.desc}}</p>
+            <div class="info-detail title pc-device"><router-link to="#">詳細介紹</router-link></div>
         </div>
     </div>
 </template>
+<script>
+export default {
+    name:'card',
+    props:{
+        cardInfo:{
+            type:Object,
+        }
+    },
+    computed:{
+        info(){
+            return {
+                imgSrc:this.cardInfo.Picture.PictureUrl1 || '',
+                activityName:this.cardInfo.ActivityName || this.cardInfo.Name || '無活動名稱',
+                duration:String(this.cardInfo.StartTime).split('T')[0] + '~' + String(this.cardInfo.EndTime).split('T')[0],
+                classTags:[this.cardInfo.Class1,this.cardInfo?.Class2],
+                organizer:this.cardInfo.Organizer,
+                desc:this.cardInfo.Description || ''
+            }
+        }
+    }
+}
+</script>
 <style lang="scss" scoped>
 .card{
     width: 100%;
     position: relative;
     bottom: 0;
     align-items: end;
+    @include phone-width{
+        border-radius: 8px;
+        overflow: hidden;
+        .pic,.textInfo{
+            grid-column: 1/-1;
+            grid-row: 1/1;
+        }
+        .info-class{
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            margin-bottom: 16px;
+            justify-content: end;
+            .class-tag{
+                padding: 4px 8px;
+                background-color: #ffffff;
+                color: #f65000;
+                margin-left: 16px;
+                border-radius: 4px;
+            }
+        }
+        .textInfo{
+            width: 100%;
+            padding: 16px 24px;
+            border-radius: 0;
+            background-color: #ff5c00;
+            text-align: end;
+            .info-name,.info-duration,.info-organizer{
+                margin-bottom: 8px;
+            }
+            .info-organizer{
+                width: 100%;
+                overflow-x: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+        }
+    }
 }
 .pic{
     border-radius: 20px;
@@ -83,7 +143,6 @@
             // background: -ms-linear-gradient(to right,rgba(255,255,255,0),white 50%,white);
             background: linear-gradient(to right,rgba($color: #ff5c00, $alpha: 0),#ff5c00 50%,#ff5c00);
         }
-
     }
     .info-detail{
         a{
@@ -92,25 +151,3 @@
     }
 }
 </style>
-<script>
-export default {
-    name:'card',
-    props:{
-        cardInfo:{
-            type:Object,
-        }
-    },
-    computed:{
-        info(){
-            return {
-                imgSrc:this.cardInfo.Picture.PictureUrl1,
-                activityName:this.cardInfo.ActivityName || this.cardInfo.Name || '無活動名稱',
-                duration:String(this.cardInfo.StartTime).split('T')[0] + '~' + String(this.cardInfo.EndTime).split('T')[0],
-                classTags:[this.cardInfo.Class1,this.cardInfo?.Class2],
-                organizer:this.cardInfo.Organizer,
-                desc:this.cardInfo.Description
-            }
-        }
-    }
-}
-</script>

@@ -2,7 +2,7 @@
     <section id="food">
         <div class="container">
             <h2 class="carouselName">美食推薦</h2>
-            <carousel :cardsData='JSONData' :viewAmount='amount' class="full-grid" indicatorType='next/prev'>
+            <carousel :cardsData='JSONData' class="full-grid" indicatorType='next/prev'>
                 <template v-slot:items='props'>
                     <foodcard :cardInfo='props.cardInfo'/>
                 </template>
@@ -14,6 +14,12 @@
 #food{
     position: relative;
     z-index: 1;
+    --custom-view:3;
+    --custom-gap:32px;
+    @include phone-width{
+        --custom-view:1;
+        --custom-gap:8px;
+    }
     .container{
         z-index: 10;
         .controlButtons{
@@ -35,7 +41,6 @@ export default {
     },
     data(){
         return{
-            amount:3,
             JSONData:[]
         }
     },

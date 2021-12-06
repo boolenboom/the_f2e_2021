@@ -2,7 +2,7 @@
     <section id='activity'>
         <div class="container">
             <h2 class="carouselName">最新活動</h2>
-            <carousel :cardsData='JSONData' :viewAmount='amount' class="full-grid" indicatorType='next/prev'>
+            <carousel :cardsData='JSONData' class="full-grid" indicatorType='next/prev'>
                 <template v-slot:items='props'>
                     <activitycard :cardInfo='props.cardInfo'/>
                 </template>
@@ -23,20 +23,19 @@ export default {
     },
     data(){
         return{
-            amount:1,
             JSONData:[]
         }
     },
     mounted(){
         let vueObj=this;
-        fetcher.setQuery({top:5});
+        fetcher.setQuery({top:10000});
         fetch(fetcher.getUrl(),fetcher.getHeader())
         .then(function (response) {
             return response.json();
         })
         .then(function (data){
-            console.log(data.length);
-            vueObj.JSONData = data;
+            let filterData = Array.from(data).filter(el=>el.Picture?.PictureUrl1);
+            vueObj.JSONData = filterData.splice(0,5);
             // isLoaded=false;
         })
         .catch(function (error) {
@@ -48,5 +47,16 @@ export default {
 <style lang="scss">
 .full-grid{
     grid-column: 1/-1;
+}
+#activity{
+    --custom-view:1;
+    --custom-gap:32px;
+    @include phone-width{
+        --custom-view:1;
+        --custom-gap:8px;
+        .controlButtons{
+            top: -84px;
+        }
+    }
 }
 </style>

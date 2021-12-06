@@ -24,37 +24,62 @@ export default {
 <style lang="scss">
 #footer{
     height: 192px;
+    @include phone-width{
+        height: auto;
+    }
     padding: 48px 0px;
     background-color: #262626;
     *{
         color: #ffffff;
+    }
+    .d-grid{
+        align-items: center;
+        row-gap: 16px;
     }
     .container{
         height: 100%;
     }
     .logo{
         grid-column: auto / span 2;
+        @include phone-width{
+            text-align: start;
+            margin-bottom: 10px;
+        }
         img{
             height: 96px;
+            @include phone-width{
+                height: 40px;
+            }
         }
     }
 }
 .website-name{
     grid-column: auto / span 2;
+    text-align: start;
+    @include phone-width{
+        text-align: end;
+    }
 }
-.website-name,.contact,.other{
+.contact,.other{
     text-align: start;
 }
 .contact,.other{
     > *+*{
-        // margin-bottom: 8px;
-        margin-block-start: 8px;
+        margin-top: 8px;
     }
 }
 .contact{
     grid-column: auto / span 3;
 }
 .other{
-    grid-column: auto / -2;
+    grid-column: -1 / -3;
+    @include phone-width{
+        grid-column: 1 / 4;
+        display: flex;
+        > *+*{
+            margin-top: 0px;
+            margin-left: 8px;
+        }
+    }
 }
 </style>

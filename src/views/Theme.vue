@@ -38,6 +38,12 @@ import advancefilter from "@/components/Advanced_Filter.vue";
 import { subHeroImgs as hashImgs } from "@/assets/filenameHashList.js";
 import fetcherConstructer from "@/assets/APIFetcher.js";
 
+let selectMatch = {
+  ScenicSpot:
+    "ID,Name,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address",
+  Restaurant: "ID,Name,RestaurantName,Class,City,Picture,Phone,Address",
+  Activity: "ID,Name,StartTime,EndTime,Class1,Class2,Picture",
+};
 function queryFilter(element = {}, factor_city = [], factor_class = []) {
   if (factor_city.length == 0 && factor_class.length == 0) return true;
   let address = String(element.Address);
@@ -59,7 +65,7 @@ function queryFilter(element = {}, factor_city = [], factor_class = []) {
     if (classStr.includes(fact)) result[1] = true;
   });
   return result[0] && result[1];
-}
+};
 export default {
   name: "theme",
   components: {
@@ -73,12 +79,6 @@ export default {
   },
   data() {
     return {
-      selectMatch: {
-        ScenicSpot:
-          "ID,Name,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address",
-        Restaurant: "ID,Name,RestaurantName,Class,City,Picture,Phone,Address",
-        Activity: "ID,Name,StartTime,EndTime,Class1,Class2,Picture",
-      },
       JSONData: [],
       dataLength: 0,
     };
@@ -99,7 +99,7 @@ export default {
       let fetcher = fetcherConstructer("Tourism", routeSet.params.category); //抓資料
       fetcher.setQuery({
         top: 10000,
-        select: this.selectMatch[routeSet.params.category || "Activity"],
+        select: selectMatch[routeSet.params.category || "Activity"],
       });
 
       let vueObj = this;

@@ -2,23 +2,17 @@
     <div class="pagination d-flex">
         <button class="button-prev" @click="pageChange($route.params.page -1)"><img src="../assets/icon/tool/arrow-left.png" class="d-block" alt="" srcset=""></button>
         <ul class="page-list d-flex" :data-Amount='dataAmount'>
-            <li v-if="$route.params.page > 5" @click="pageChange(1)">1</li>
+            <li @click="pageChange(1)" :class='{"active":isActive(1)}'>1</li>
             <li v-if="$route.params.page > 5">...</li>
-            <li v-for="index in 4" :key="`before` + index" 
-            :class='{"active":+$route.params.page===+index}'
-            @click="pageChange(+relatePage(index))">
-                {{+relatePage(index)}}
+            <li v-for="index in pageNumber" :key="`page` + index" 
+                :class='{"active":isActive(relatePage(+index + 1))}'
+                @click="pageChange(relatePage(+index + 1))">
+                {{relatePage(+index + 1)}}
             </li>
-            <li :class="{'active':$route.params.page > 4}"
-                @click="pageChange($route.params.page > 4 ? $route.params.page : 5)">
-                {{$route.params.page > 4 ? $route.params.page : 5}}
+            <li v-if="+$route.params.page + 5 < +lastPageNumber">...</li>
+            <li @click="pageChange(lastPageNumber)" :class='{"active":isActive(lastPageNumber)}'>
+                {{lastPageNumber}}
             </li>
-            <li v-for="index in 4" :key="`after` + index"
-            @click="pageChange($route.params.page > 4 ? +$route.params.page + +index : 5 + +index)">
-                {{$route.params.page > 4 ? +$route.params.page + +index : 5 + +index}}
-            </li>
-            <li v-if="$route.params.page + 5 < lastPageNumber">...</li>
-            <li>{{lastPageNumber}}</li>
         </ul>
         <button class="button-next" @click="pageChange($route.params.page +1)"><img src="../assets/icon/tool/arrow-right.png" class="d-block" alt="" srcset=""></button>
     </div>
@@ -30,13 +24,22 @@ export default {
         dataAmount:{type:Number,default:149}
     },
     computed:{
+        pageNumber(){
+            return Math.floor(this.dataAmount / 15) - 2 > 8 ? 8 :  Math.floor(this.dataAmount / 15) - 2;
+        },
         lastPageNumber(){
-            return Math.ceil(this.dataAmount / 15);
+            return Math.floor(this.dataAmount / 15);
         }
     },
     methods:{
+        isActive(index){
+            return +this.$route.params.page === +index;
+        },
         relatePage(index){
-            let page = this.$route.params.page < 5 ? index : this.$route.params.page - (5 - index);
+            let last = Math.floor(this.dataAmount / 15);
+            let page = this.$route.params.page < 5 
+                ? index : this.$route.params.page + 5 < last 
+                    ? this.$route.params.page - (5 - index) : this.$route.params.page - ((10 - (last - this.$route.params.page)) - index);
             return page;
         },
         pageChange(index){

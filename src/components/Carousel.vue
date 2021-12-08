@@ -9,7 +9,7 @@
         @pointermove.prevent='slideHandler' 
         @pointerup.prevent='slideHandler'
         draggable="false">
-            <li v-for="cardData of cardsData" :key='cardData.id' :style="`--current-index:${currentIndex}`" draggable="false">
+            <li v-for="cardData of cardsData" :key='cardData.ID' :style="`--current-index:${currentIndex}`" draggable="false">
                 <slot name='items' :cardInfo='cardData'></slot>
             </li>
         </div>

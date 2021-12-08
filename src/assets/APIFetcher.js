@@ -58,6 +58,7 @@ let fetcher = function(THEME,CATEGORY,BASEURL){
             $skip=setting.skip || $skip;
             $select=setting.select || $select;
             $format=setting.format || $format;
+            $filter=setting.filter || $filter;
         },
         setSearch:function(searchString){
             if(!searchString) return;

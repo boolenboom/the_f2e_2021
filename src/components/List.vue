@@ -16,6 +16,9 @@
     }
     li{
         grid-column: auto/span 4;
+        a{
+            text-decoration: none;
+        }
     }
 }
 </style>

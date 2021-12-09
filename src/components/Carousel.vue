@@ -7,11 +7,19 @@
         <div class="list d-flex"
         @pointerdown.prevent='slideHandler' 
         @pointermove.prevent='slideHandler' 
-        @pointerup.prevent='slideHandler'
-        draggable="false">
-            <li v-for="cardData of cardsData" :key='cardData.ID' :style="`--current-index:${currentIndex}`" draggable="false">
-                <slot name='items' :cardInfo='cardData'></slot>
-            </li>
+        @pointerup.prevent='slideHandler'>
+            <template v-if="themeType!==''">
+                <li v-for="cardData of cardsData" :key='cardData.ID' :style="`--current-index:${currentIndex}`" >
+                    <router-link :to="`/content/${themeType}/${cardData.ID}`">
+                        <slot name='items' :cardInfo='cardData'></slot>
+                    </router-link>
+                </li>
+            </template>
+            <template v-if="themeType===''">
+                <li v-for="cardData of cardsData" :key='cardData.ID' :style="`--current-index:${currentIndex}`" >
+                    <slot name='items' :cardInfo='cardData'></slot>
+                </li>
+            </template>
         </div>
         <ul v-if="indicatorType === 'point'" class="indicators d-flex">
             <li v-for="item,index of cardsData" :key='item.id' class="indicator">
@@ -66,9 +74,9 @@
             margin-right: var(--gap);
             transform: translateX(calc((100% * var(--current-index) + var(--gap) * var(--current-index)) * -1));
             transition: transform .2s linear;
-        }
-        *{
-            pointer-events: none;
+            a{
+                text-decoration: none;
+            }
         }
     }
 }
@@ -100,6 +108,7 @@ export default {
     //     card,
     // },
     props:{
+        themeType:{type:String,default:''},
         cardsData:{
             type:Array,
             dafault:[]

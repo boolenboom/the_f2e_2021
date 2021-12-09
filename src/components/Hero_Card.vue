@@ -20,7 +20,7 @@
     width: 100%;
     position: relative;
     --card-height:var(--hero-card-height,756px);
-    --text-posY:var(--hero-text-pos-y,,227px);
+    --text-posY:var(--hero-text-pos-y,227px);
 }
 .pic{
     width: 100%;

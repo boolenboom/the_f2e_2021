@@ -1,6 +1,6 @@
 <template>
-    <div id='content' class="container">
-        <div class="detail-content d-grid">
+    <div id='content'>
+        <div class="detail-content d-grid container">
             <carousel :cardsData='imgData' class="content-carousel-overwrite" indicatorType='next/prev'>
                 <template v-slot:items='props'>
                     <img :src="props.cardInfo.img" :alt="props.cardInfo.descr" srcset="">
@@ -12,32 +12,38 @@
                     <li v-for="classTag of info.classTags" :key='classTag' class="class-tag">{{classTag}}</li>
                 </ul>
                 <div class="info-text">
-                    <div v-if="$route.params.category === 'Activity'" class="info-orangizer">主辦單位</div>
-                    <div v-if="$route.params.category !== 'Activity'" class="info-phone d-flex"><span class="phone-number">電話</span><a class="phone-contact" href="tel:+">致電</a></div>
-                    <div v-if="$route.params.category !== 'Restaurant'" class="info-site">網址</div>
-                    <div class="info-address">地址</div>
-                    <div class="info-openTime">開放時間</div>
+                    <div v-if="$route.params.category === 'Activity'" class="info-organizer">{{info.organizer}}</div>
+                    <div v-if="$route.params.category !== 'Activity'" class="info-phone d-flex"><span class="phone-number">{{info.phone}}</span><a class="phone-contact" :href="`tel:+${info.phone}`">致電</a></div>
+                    <div v-if="$route.params.category !== 'Restaurant'" class="info-site"><a :href="info.website">{{info.website}}</a></div>
+                    <div class="info-address">
+                        <template v-if="info.mapUrl===''">{{info.address}}</template>
+                        <template v-if="info.mapUrl!==''"><a :href="info.mapUrl">{{info.address}}</a></template>
+                    </div>
+                    <div class="info-openTime">{{info.openTime}}</div>
                 </div>
             </div>
             <div class="intro"><span>簡介：</span><p>{{info.intro}}</p></div>
         </div>
         <div class="other-option">
-            <carousel :cardsData='optionJSON' indicatorType='next/prev'>
-                <template v-slot:items='props'>
-                    <scenicspotcard
-                    v-if="$route.params.category === 'ScenicSpot'"
-                    :cardInfo="props.cardInfo"
-                    />
-                    <activitycard
-                    v-if="$route.params.category === 'Activity'"
-                    :cardInfo="props.cardInfo"
-                    />
-                    <foodcard
-                    v-if="$route.params.category === 'Restaurant'"
-                    :cardInfo="props.cardInfo"
-                    />
-                </template>
-            </carousel>
+            <div class="container">
+                <carousel :cardsData='optionJSON' indicatorType='next/prev'
+                    :themeType='$route.params.category'>
+                    <template v-slot:items='props'>
+                        <scenicspotcard
+                        v-if="$route.params.category === 'ScenicSpot'"
+                        :cardInfo="props.cardInfo"
+                        />
+                        <activitycard
+                        v-if="$route.params.category === 'Activity'"
+                        :cardInfo="props.cardInfo"
+                        />
+                        <foodcard
+                        v-if="$route.params.category === 'Restaurant'"
+                        :cardInfo="props.cardInfo"
+                        />
+                    </template>
+                </carousel>
+            </div>
         </div>
     </div>
 </template>
@@ -91,10 +97,20 @@ export default {
                 if (key.includes('Class')) {
                     classArr.push(obj[key]);
                 }
-            };
+            };''.split
             return{
                 name:this.JSONData.Name || '無名',
                 classTags:classArr,
+                organizer: this.JSONData?.Organizer || '',
+                phone: this.JSONData?.Phone || '',
+                website: this.JSONData?.WebsiteUrl || '',
+                mapUrl: this.JSONData?.MapUrl || '',
+                address: this.JSONData?.Address || '',
+                openTime: this.JSONData?.OpenTime 
+                    || String(this.JSONData?.StartTime).split('T')[0] 
+                        + '~' 
+                        + String(this.JSONData?.EndTime).split('T')[0] 
+                    ||'',
                 intro:this.JSONData.DescriptionDetail || this.JSONData.Description
             }
         }
@@ -141,6 +157,11 @@ export default {
                 });
         }
     },
+    watch:{
+        $route(to) {
+            this.runFetch(to);
+        }
+    },
     mounted(){
         this.runFetch();
     }
@@ -156,7 +177,14 @@ export default {
         --custom-gap:0px;
         .content-carousel-overwrite{
             grid-column: 1 / 9;
+            li{
+                img{
+                    height: 480px;
+                    object-fit: cover;
+                }
+            }
             .controlButtons{
+                z-index: 100;
                 width: 100%;
                 top: 50%;
                 transform: translateY(-50%);
@@ -170,12 +198,19 @@ export default {
             grid-column: auto / span 4;
             text-align: start;
             .info-text{
+                margin-top: 32px;
                 *{
                     color: #676767;
+                }
+                >* + *{
+                    margin-top: 16px;
                 }
                 a{
                     color: #f65000;
                     text-decoration-color: #f65000;
+                }
+                .info-class{
+                    justify-content: start;
                 }
                 .info-phone{
                     align-items: center;
@@ -193,6 +228,8 @@ export default {
             }
         }
         .intro{
+            position: relative;
+            top: -40px;
             span{
                 display: block;
             }
@@ -210,7 +247,7 @@ export default {
         top: 16px;
         right: 16px;
         margin-bottom: 16px;
-        justify-content: end;
+        // justify-content: end;
         .class-tag{
             padding: 4px 8px;
             background-color: #ffefe6;

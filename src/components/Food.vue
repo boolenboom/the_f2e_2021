@@ -2,7 +2,7 @@
     <section id="food">
         <div class="container">
             <h2 class="carouselName">美食推薦</h2>
-            <carousel :cardsData='JSONData' class="full-grid" indicatorType='next/prev'>
+            <carousel :cardsData='JSONData' class="full-grid" indicatorType='next/prev' themeType='Restaurant'>
                 <template v-slot:items='props'>
                     <foodcard :cardInfo='props.cardInfo'/>
                 </template>

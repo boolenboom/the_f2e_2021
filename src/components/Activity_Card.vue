@@ -11,7 +11,7 @@
             </ul>
             <div class="info-organizer subt1">主辦單位：{{info.organizer}}</div>
             <p class="info-intro b1 pc-device" :class="{'text-overflow':info.desc.length > 100}">{{info.desc}}</p>
-            <div class="info-detail title pc-device"><router-link to="#">詳細介紹</router-link></div>
+            <div class="info-detail title pc-device"><router-link :to="`/content/Activity/${info.id}`">詳細介紹</router-link></div>
         </div>
     </div>
 </template>
@@ -26,6 +26,7 @@ export default {
     computed:{
         info(){
             return {
+                id:this.cardInfo.ID,
                 imgSrc:this.cardInfo.Picture.PictureUrl1 || '',
                 activityName:this.cardInfo.ActivityName || this.cardInfo.Name || '無活動名稱',
                 duration:String(this.cardInfo.StartTime).split('T')[0] + '~' + String(this.cardInfo.EndTime).split('T')[0],
@@ -145,6 +146,7 @@ export default {
         }
     }
     .info-detail{
+        z-index: 60;
         a{
             color: #ffffff;
         }

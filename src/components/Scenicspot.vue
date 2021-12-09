@@ -2,7 +2,7 @@
     <section id="scenicspot">
         <div class="container">
             <h2 class="carouselName">熱門景點</h2>
-            <carousel :cardsData='JSONData' class="full-grid" indicatorType='next/prev'>
+            <carousel :cardsData='JSONData' class="full-grid" indicatorType='next/prev' themeType='ScenicSpot'>
                 <template v-slot:items='props'>
                     <scenicspotcard :cardInfo='props.cardInfo'/>
                 </template>
@@ -58,7 +58,7 @@ export default {
     },
     mounted(){
         let vueObj=this;
-        fetcher.setQuery({top:5000,select:'ID,Name,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture'});
+        fetcher.setQuery({top:5000,select:'ID,Name,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address'});
         fetch(fetcher.getUrl(),fetcher.getHeader())
         .then(function (response) {
             return response.json();

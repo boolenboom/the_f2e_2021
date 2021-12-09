@@ -1,12 +1,12 @@
 {"ScenicSpot":{
-    "id":1,
+    "ID":1,
     "imgIndex":"0",
     "title":"旅遊景點",
     "subtitle":"．暢遊臺灣的每一個角落．",
     "para":""
 },
 "Restaurant":{
-    "id":2,
+    "ID":2,
     "imgIndex":"1",
     "title":"特色美食",
     "subtitle":"．走遍各鄉鎮品嘗台灣味．",
@@ -14,7 +14,7 @@
     
 },
 "Activity":{
-    "id":3,
+    "ID":3,
     "imgIndex":"2",
     "title":"活動介紹",
     "subtitle":"．深刻體會濃厚的人情味．",

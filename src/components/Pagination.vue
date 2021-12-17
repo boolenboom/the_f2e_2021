@@ -10,7 +10,7 @@
                 {{relatePage(+index + 1)}}
             </li>
             <li v-if="+$route.params.page + 5 < +lastPageNumber">...</li>
-            <li @click="pageChange(lastPageNumber)" :class='{"active":isActive(lastPageNumber)}'>
+            <li v-if="lastPageNumber !== 0" @click="pageChange(lastPageNumber)" :class='{"active":isActive(lastPageNumber)}'>
                 {{lastPageNumber}}
             </li>
         </ul>
@@ -21,11 +21,13 @@
 export default {
     name:'pagination',
     props:{
-        dataAmount:{type:Number,default:149}
+        dataAmount:{type:Number,default:149},
+        viewType:{type:String,default:'theme'}
     },
     computed:{
         pageNumber(){
-            return Math.floor(this.dataAmount / 15) - 2 > 8 ? 8 :  Math.floor(this.dataAmount / 15) - 2;
+            console.log(typeof this.dataAmount === 'number');
+            return (Math.floor(this.dataAmount / 15) > 10) ? 8 :  Math.max((Math.floor(this.dataAmount / 15) - 2),0);
         },
         lastPageNumber(){
             return Math.floor(this.dataAmount / 15);
@@ -37,16 +39,18 @@ export default {
         },
         relatePage(index){
             let last = Math.floor(this.dataAmount / 15);
-            let page = this.$route.params.page < 5 
-                ? index : this.$route.params.page + 5 < last 
-                    ? this.$route.params.page - (5 - index) : this.$route.params.page - ((10 - (last - this.$route.params.page)) - index);
+            let page = 
+            (this.$route.params.page < 5) ? index : 
+            (this.$route.params.page + 5 < last) ? this.$route.params.page - (5 - index) :
+                this.$route.params.page - ((10 - (last - this.$route.params.page)) - index);
             return page;
         },
         pageChange(index){
             let customparams =JSON.parse(JSON.stringify(this.$route.params));
             customparams.page = index;
             console.log(customparams,this.$route);
-            this.$router.push({name:'theme',params:customparams,query:this.$route?.query});
+            let type = this.viewType;
+            this.$router.push({name:type,params:customparams,query:this.$route?.query});
         }
     }
 }

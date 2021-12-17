@@ -53,6 +53,9 @@ let fetcher = function(THEME,CATEGORY,BASEURL){
             urlUpdate();
             return url;
         },
+        getCategory:function(){
+            return category;
+        },
         setQuery:function(setting){
             $top=setting.top || $top;
             $skip=setting.skip || $skip;

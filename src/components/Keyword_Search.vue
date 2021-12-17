@@ -1,9 +1,11 @@
 <template>
-    <form action="#" method="get" class="search-keyword" :class="{'focus':isFocus}">
+    <form action="/search/1" method="get" class="search-keyword" :class="{'focus':isFocus}">
                 <input type="search" name="keywordSearch" :id="uniqueID" 
                 placeholder="請輸入關鍵字" 
                 aria-label="需要搜尋請輸入關鍵字"
                 required
+                v-model="searchString"
+                @change="trim"
                 @focus="isFocus=true"
                 @blur="isFocus=false">
                 <label :for="uniqueID"><i class="gg-search"></i></label>
@@ -15,9 +17,15 @@ export default {
     data(){
         return{
             uniqueID:'keywordSearch'+ Math.floor(Math.random()*100),
-            isFocus:false
+            isFocus:false,
+            searchString:''
         }
     },
+    methods:{
+        trim(){
+            this.searchString = String(this.searchString).trim();
+        }
+    }
 }
 </script>
 <style lang="scss" scoped>

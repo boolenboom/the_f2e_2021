@@ -126,6 +126,7 @@ input[type='submit']{
     border: 1px solid #ff5c00;
     border-radius: 50px;
     justify-content: space-evenly;
+    background-color: #ffffff;
     > *{
         flex: 1 1 auto;
     }

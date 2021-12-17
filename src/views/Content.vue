@@ -12,17 +12,18 @@
                     <li v-for="classTag of info.classTags" :key='classTag' class="class-tag">{{classTag}}</li>
                 </ul>
                 <div class="info-text">
-                    <div v-if="$route.params.category === 'Activity'" class="info-organizer">{{info.organizer}}</div>
-                    <div v-if="$route.params.category !== 'Activity'" class="info-phone d-flex"><span class="phone-number">{{info.phone}}</span><a class="phone-contact" :href="`tel:+${info.phone}`">致電</a></div>
-                    <div v-if="$route.params.category !== 'Restaurant'" class="info-site"><a :href="info.website">{{info.website}}</a></div>
+                    <div v-if="$route.params.category === 'Activity'" class="info-organizer"><img src="../assets/icon/inform/organizer-primary.png" alt="" srcset="">{{info.organizer}}</div>
+                    <div v-if="$route.params.category !== 'Activity'" class="info-phone d-flex"><span class="phone-number"><img src="../assets/icon/inform/phone-primary.png" alt="" srcset="">{{info.phone}}</span><a class="phone-contact" :href="`tel:+${info.phone}`">致電</a></div>
+                    <div v-if="$route.params.category !== 'Restaurant'" class="info-site"><img src="../assets/icon/inform/web-primary.png" alt="" srcset=""><a :href="info.website">{{info.website}}</a></div>
                     <div class="info-address">
+                        <img src="../assets/icon/inform/location-primary.png" alt="" srcset="">
                         <template v-if="info.mapUrl===''">{{info.address}}</template>
                         <template v-if="info.mapUrl!==''"><a :href="info.mapUrl">{{info.address}}</a></template>
                     </div>
-                    <div class="info-openTime">{{info.openTime}}</div>
+                    <div class="info-openTime"><img src="../assets/icon/inform/time-primary.png" alt="" srcset="">{{info.openTime}}</div>
                 </div>
             </div>
-            <div class="intro"><span>簡介：</span><p>{{info.intro}}</p></div>
+            <div class="intro"><span>簡介: </span><p>{{info.intro}}</p></div>
         </div>
         <div class="other-option">
             <div class="container">

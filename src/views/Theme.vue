@@ -7,21 +7,7 @@
         :themeType="$route.params.category || 'Activity'"
       />
     </div>
-    <list :cardsData="JSONData">
-      <template v-slot:items="props">
-        <scenicspotcard
-          v-if="$route.params.category === 'ScenicSpot'"
-          :cardInfo="props.cardInfo"
-        />
-        <activitycard
-          v-if="$route.params.category === 'Activity'"
-          :cardInfo="props.cardInfo"
-        />
-        <foodcard
-          v-if="$route.params.category === 'Restaurant'"
-          :cardInfo="props.cardInfo"
-        />
-      </template>
+    <list :cardsData="pageData">
     </list>
     <pagination :dataAmount="dataLength" />
   </div>
@@ -30,9 +16,6 @@
 import heroJSON from "@/assets/JSON/subhero.json";
 import herocard from "@/components/Hero_Card.vue";
 import list from "@/components/List.vue";
-import activitycard from "@/components/Activity_Card.vue";
-import scenicspotcard from "@/components/Scenicspot_Card.vue";
-import foodcard from "@/components/Food_Card.vue";
 import pagination from "@/components/Pagination.vue";
 import advancefilter from "@/components/Advanced_Filter.vue";
 import { subHeroImgs as hashImgs } from "@/assets/filenameHashList.js";
@@ -72,9 +55,6 @@ export default {
     herocard,
     advancefilter,
     list,
-    activitycard,
-    scenicspotcard,
-    foodcard,
     pagination,
   },
   data() {
@@ -89,11 +69,15 @@ export default {
       let obj = heroJSON[this.$route.params.category];
       return { ...obj, imgSrc: hashImgs[+obj.imgIndex] };
     },
+    pageData(){
+      let page = this.$route.params.page;
+      let currPageData = Array.from(this.JSONData).splice(15*page,15);
+      return currPageData;
+    }
   },
   methods: {
     runFetch(routeObj) {
       let routeSet = routeObj || this.$route;
-      let page = routeSet.params.page;
       let cities = routeSet.query.cities != undefined ? String(routeSet.query.cities).split(",") : [];
       let tagClass = routeSet.query.class != undefined ? String(routeSet.query.class).split(",") : [];
       let fetcher = fetcherConstructer("Tourism", routeSet.params.category); //抓資料
@@ -114,7 +98,7 @@ export default {
           );
           console.log("過濾獲取資料長度:" + filterData.length);
           vueObj.dataLength = filterData.length;
-          vueObj.JSONData = filterData.splice(page * 15, 15);
+          vueObj.JSONData = filterData.map(data=>{return {...data,category:routeSet.params.category}});
         })
         .catch(function (error) {
           console.warn(error);

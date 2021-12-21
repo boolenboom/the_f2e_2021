@@ -1,5 +1,5 @@
 <template>
-    <form action="/search/1" method="get" class="search-keyword" :class="{'focus':isFocus}">
+    <form class="search-keyword" :class="{'focus':isFocus}">
                 <input type="search" name="keywordSearch" :id="uniqueID" 
                 placeholder="請輸入關鍵字" 
                 aria-label="需要搜尋請輸入關鍵字"
@@ -7,8 +7,11 @@
                 v-model="searchString"
                 @change="trim"
                 @focus="isFocus=true"
-                @blur="isFocus=false">
+                @blur="isFocus=false"
+                @keyup.enter="routerChange">
+                
                 <label :for="uniqueID"><i class="gg-search"></i></label>
+                <button @click.prevent="routerChange" :class="{'focus':isFocus}">搜尋</button>
     </form>
 </template>
 <script>
@@ -24,6 +27,13 @@ export default {
     methods:{
         trim(){
             this.searchString = String(this.searchString).trim();
+        },
+        routerChange(){
+            this.trim();
+            if(this.searchString == '') return;
+            let KS = this.searchString;
+            this.searchString = '';
+            this.$router.push({name:'search',params:{page:1},query:{keywordSearch:KS}});
         }
     }
 }
@@ -34,6 +44,24 @@ export default {
     position: relative;
     &.focus{
         z-index: 10;
+    }
+    button{
+        z-index: 11;
+        display: none;
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        padding: 14px;
+        height: 50px;
+        color: #ffffff;
+        background-color: #ff5c00;
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+        border: none;
+        cursor: pointer;
+        &.focus{
+            display: block;
+        }
     }
     label{
         z-index: 5;
@@ -71,6 +99,9 @@ export default {
             i{
                 color: #000000;
             }
+        }
+        &:focus-visible ~ button{
+            display: block;
         }
     }
 }

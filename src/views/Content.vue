@@ -14,7 +14,7 @@
                 <div class="info-text">
                     <div v-if="$route.params.category === 'Activity'" class="info-organizer"><img src="../assets/icon/inform/organizer-primary.png" alt="" srcset="">{{info.organizer}}</div>
                     <div v-if="$route.params.category !== 'Activity'" class="info-phone d-flex"><span class="phone-number"><img src="../assets/icon/inform/phone-primary.png" alt="" srcset="">{{info.phone}}</span><a class="phone-contact" :href="`tel:+${info.phone}`">致電</a></div>
-                    <div v-if="$route.params.category !== 'Restaurant'" class="info-site"><img src="../assets/icon/inform/web-primary.png" alt="" srcset=""><a :href="info.website">{{info.website}}</a></div>
+                    <div v-if="$route.params.category !== 'Restaurant' && info.website != ''" class="info-site"><img src="../assets/icon/inform/web-primary.png" alt="" srcset=""><a :href="info.website">官方網站</a></div>
                     <div class="info-address">
                         <img src="../assets/icon/inform/location-primary.png" alt="" srcset="">
                         <template v-if="info.mapUrl===''">{{info.address}}</template>
@@ -27,6 +27,7 @@
         </div>
         <div class="other-option">
             <div class="container">
+                <h2 class="carouselName">您可能喜歡</h2>
                 <carousel :cardsData='optionJSON' indicatorType='next/prev'
                     :themeType='$route.params.category'>
                     <template v-slot:items='props'>
@@ -128,18 +129,18 @@ export default {
                 })
                 .then(function (data) {
                 vueObj.JSONData = data[0];
-                vueObj.runOptionFetch(routeSet,data[0].Address)
+                vueObj.runOptionFetch(routeSet, data[0].Address, data[0].ID)
                 })
                 .catch(function (error) {
                 console.warn(error);
                 });
                 window.scrollTo(0,0);
         },
-        runOptionFetch(routeObj,address){
+        runOptionFetch(routeObj,address,currID){
             let routeSet = routeObj || this.$route;
             let fetcher = fetcherConstructer("Tourism", routeSet.params.category);
             fetcher.setQuery({top:10000
-                ,filter:`contains(Address,'${String(address).slice(0,3)}')`
+                ,filter:`contains(Address,'${String(address).slice(0,3)}') or contains(ID,'${String(currID).slice(0,12)}')`
                 ,select:selectMatch[routeSet.params.category || "Activity"]});
             let vueObj = this;
             fetch(fetcher.getUrl(), fetcher.getHeader())
@@ -171,13 +172,17 @@ export default {
 <style lang="scss">
 #content{
     .detail-content,.other-option{
-        padding: 80px 0px;
+        padding-top: 80px;
+        padding-bottom: 80px;
     }
     .detail-content{
         --custom-view:1;
         --custom-gap:0px;
         .content-carousel-overwrite{
-            grid-column: 1 / 9;
+            grid-column: 1 / span 8;
+            @include phone-width{
+                grid-column: 1 / span 4;
+            }
             li{
                 img{
                     height: 480px;
@@ -197,6 +202,10 @@ export default {
         }
         .info{
             grid-column: auto / span 4;
+            @include phone-width{
+                margin-top: 40px;
+                grid-row: 2 / span 1;
+            }
             text-align: start;
             .info-text{
                 margin-top: 32px;
@@ -231,6 +240,10 @@ export default {
         .intro{
             position: relative;
             top: -40px;
+            @include phone-width{
+                top: 40px;
+                grid-column: 1 / span 4;
+            }
             span{
                 display: block;
             }
@@ -265,6 +278,56 @@ export default {
         @include phone-width{
             --custom-view:1;
             --custom-gap:8px;
+        }
+        .controlButtons{
+            top: -84px;
+        }
+        .overwrite {
+            width: 100%;
+            position: relative;
+            bottom: 0;
+            align-items: end;
+            border-radius: 8px;
+            overflow: hidden;
+            .pic {
+                height: 312px;
+            }
+            .pic,
+            .textInfo {
+                grid-column: 1/-1;
+                grid-row: 1/1;
+            }
+            .info-class {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                margin-bottom: 16px;
+                justify-content: end;
+                .class-tag {
+                    padding: 4px 8px;
+                    background-color: #ffffff;
+                    color: #f65000;
+                    margin-left: 16px;
+                    border-radius: 4px;
+                }
+            }
+            .textInfo {
+            width: 100%;
+            padding: 16px 24px;
+            border-radius: 0;
+            background-color: #ff5c00;
+            text-align: start;
+            .info-name,
+            .info-duration,
+            .info-organizer {
+                margin-bottom: 8px;
+            }
+            .info-organizer,
+            .info-intro,
+            .info-detail {
+                display: none;
+            }
+            }
         }
     }
 }

@@ -56,45 +56,45 @@ export default {
     },
     methods: {
         runFetch(routeObj) {
-        let routeSet = routeObj || this.$route;
-        let keywordAry = String(routeSet.query.keywordSearch).split(' ');
-        let filterString = keywordAry.reduce((acc,curr,index)=>{
-          return acc + 
-          (index == 0 ? '' : ' or ') + 
-          `contains(Name, '${curr}') or contains(Address, '${curr}')`
-          },'')
-        this.JSONData = [];
-        this.dataLength = 0;
-        let vueObj = this;
-        let fetcher = [
-          new fetcherConstructer("Tourism", "Activity")
-          ,new fetcherConstructer("Tourism", "Restaurant")
-          ,new fetcherConstructer("Tourism", "ScenicSpot")];
-        console.log(filterString, fetcher.map(el=>el.getUrl()));
-        fetcher.forEach((handler)=>{
-            handler.setQuery(
-            {top:10000
-            ,select:selectMatch[handler.getCategory()]
-            ,filter:filterString})
-          });
-        fetcher.forEach((handler)=>{
-          fetch(handler.getUrl(),handler.getHeader())
-            .then(function(res){return res.json();})
-            .then(function(data){
-              console.log(handler.getCategory() + "原始獲取資料長度:" + data.length);
-              let filterData = Array.from(data).filter(
-                (el) => (el.Picture?.PictureUrl1)
-              );
-              console.log(handler.getCategory() + "過濾獲取資料長度:" + filterData.length);
-              let addLength = vueObj.dataLength + (+filterData.length || 0);
-              vueObj.dataLength = addLength;
-              vueObj.JSONData = [...vueObj.JSONData, ...filterData.map(data=>{return {...data,category:handler.getCategory()}})]
-            })
-            .catch(function (error) {
-              console.warn(error);
+          let routeSet = routeObj || this.$route;
+          let keywordAry = String(routeSet.query.keywordSearch).split(' ');
+          let filterString = keywordAry.reduce((acc,curr,index)=>{
+            return acc + 
+            (index == 0 ? '' : ' or ') + 
+            `contains(Name, '${curr}') or contains(Address, '${curr}')`
+            },'')
+          this.JSONData = [];
+          this.dataLength = 0;
+          let vueObj = this;
+          let fetcher = [
+            new fetcherConstructer("Tourism", "Activity")
+            ,new fetcherConstructer("Tourism", "Restaurant")
+            ,new fetcherConstructer("Tourism", "ScenicSpot")];
+          console.log(filterString, fetcher.map(el=>el.getUrl()));
+          fetcher.forEach((handler)=>{
+              handler.setQuery(
+              {top:10000
+              ,select:selectMatch[handler.getCategory()]
+              ,filter:filterString})
             });
-        }); //抓資料
-        window.scrollTo(0,0);
+          fetcher.forEach((handler)=>{
+            fetch(handler.getUrl(),handler.getHeader())
+              .then(function(res){return res.json();})
+              .then(function(data){
+                console.log(handler.getCategory() + "原始獲取資料長度:" + data.length);
+                let filterData = Array.from(data).filter(
+                  (el) => (el.Picture?.PictureUrl1)
+                );
+                console.log(handler.getCategory() + "過濾獲取資料長度:" + filterData.length);
+                let addLength = vueObj.dataLength + (+filterData.length);
+                vueObj.dataLength = addLength;
+                vueObj.JSONData = [...vueObj.JSONData, ...filterData.map(data=>{return {...data,category:handler.getCategory()}})]
+              })
+              .catch(function (error) {
+                console.warn(error);
+              });
+          }); //抓資料
+          window.scrollTo(0,0);
         },
     },
     watch: {

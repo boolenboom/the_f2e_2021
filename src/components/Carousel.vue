@@ -4,10 +4,12 @@
             <button :disabled="currentIndex <= 0" class="button d-block" @click='buttonClickHandler(-1)'><img src="@/assets/icon/tool/arrow-left.png" class='d-block' alt="" srcset=""></button>
             <button :disabled="currentIndex >= cardsData.length - 1" class="button d-block" @click='buttonClickHandler(1)'><img src="@/assets/icon/tool/arrow-right.png" class="d-block" alt="" srcset=""></button>
         </div>
-        <div class="list d-flex"
+        <div class="list d-flex" :class='{"sliding":isSliding}'
         @pointerdown.prevent='slideHandler' 
         @pointermove.prevent='slideHandler' 
-        @pointerup.prevent='slideHandler'>
+        @pointerup.prevent='slideHandler'
+        @touchmove='slideHandler'
+        @touchend='slideHandler'>
             <template v-if="themeType!==''">
                 <li v-for="cardData of cardsData" :key='cardData.ID' :style="`--current-index:${currentIndex}`" >
                     <router-link :to="`/content/${themeType}/${cardData.ID}`">
@@ -79,6 +81,11 @@
             }
         }
     }
+    .sliding{
+        li{
+            pointer-events: none;
+        }
+    }
 }
 .indicators{
     position: absolute;
@@ -128,14 +135,17 @@ export default {
     data(){
         return{
             currentIndex:0,
+            isSliding:false,
             carouselHandler:handlerConstructer()
         }
     },
     methods:{
         slideHandler(e){
+            console.log(e.type)
             let vueObj = this;
             window.requestAnimationFrame(function(){
-                let result = vueObj.carouselHandler[e.type](e.x,vueObj.currentIndex);
+                let result = vueObj.carouselHandler[e.type](e.x || e.changedTouches[0].clientX, vueObj.currentIndex);
+                vueObj.isSliding = vueObj.carouselHandler.checkIsSliding();
                 if(result >= 1) vueObj.currentIndex = result - 1;
             })
         },

@@ -5,7 +5,7 @@
                 <button class="button-switch" @click="SwitchHandler('searchFullpage')"><img src="../assets/icon/tool/search-primary.png" alt="" srcset=""></button>
                 <div class="search-fullpage container" :class="{'fullpage-default':!switchName.searchFullpage}">
                     <button class="button-cancel" @click="SwitchHandler('searchFullpage',false)"><img src="../assets/icon/tool/close-white.png" alt="" srcset=""></button>
-                    <div class="keyword-layout">
+                    <div class="keyword-layout" @change="collapseMenu">
                         <keyword-search/>
                     </div>
                     <div class="condition-layout">
@@ -19,9 +19,9 @@
             <div class="menu d-flex" :class="{'menu-default':!switchName.menuFullpage}">
                 <button class="button-cancel" @click="SwitchHandler('menuFullpage',false)"><img src="../assets/icon/tool/close-white.png" alt="" srcset=""></button>
                 <ul class="pages d-flex">
-                    <li class="pageOption"><router-link to="/theme/Activity/1">活動介紹</router-link></li>
-                    <li class="pageOption"><router-link to="/theme/ScenicSpot/1">旅遊景點</router-link></li>
-                    <li class="pageOption"><router-link to="/theme/Restaurant/1">特色美食</router-link></li>
+                    <li class="pageOption" @click="SwitchHandler('menuFullpage',false)"><router-link to="/theme/Activity/1">活動介紹</router-link></li>
+                    <li class="pageOption" @click="SwitchHandler('menuFullpage',false)"><router-link to="/theme/ScenicSpot/1">旅遊景點</router-link></li>
+                    <li class="pageOption" @click="SwitchHandler('menuFullpage',false)"><router-link to="/theme/Restaurant/1">特色美食</router-link></li>
                 </ul>
                 <div class="condition-layout pc-device">
                     <keyword-search/>
@@ -192,6 +192,10 @@ export default {
         },
         SwitchHandler(nameValue,boolenVal){
             this.switchName[nameValue] = boolenVal || !this.switchName[nameValue];
+        },
+        collapseMenu(){
+            this.switchName.searchFullpage = false;
+            this.switchName.menuFullpage = false;
         }
     },
     watch:{

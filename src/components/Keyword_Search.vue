@@ -1,17 +1,18 @@
 <template>
-    <form class="search-keyword" :class="{'focus':isFocus}">
-                <input type="search" name="keywordSearch" :id="uniqueID" 
+    <form class="search-keyword" 
+        :class="{'focus':isFocus}" 
+        @focus="isFocus=true" 
+        @blur="isFocus=false">
+            <input type="search" name="keywordSearch" :id="uniqueID" 
                 placeholder="請輸入關鍵字" 
                 aria-label="需要搜尋請輸入關鍵字"
                 required
                 v-model="searchString"
                 @change="trim"
-                @focus="isFocus=true"
-                @blur="isFocus=false"
                 @keyup.enter="routerChange">
                 
-                <label :for="uniqueID"><i class="gg-search"></i></label>
-                <button @click.prevent="routerChange" :class="{'focus':isFocus}">搜尋</button>
+            <label :for="uniqueID"><i class="gg-search"></i></label>
+            <button @click.prevent="routerChange" >搜尋</button>
     </form>
 </template>
 <script>
@@ -32,7 +33,6 @@ export default {
             this.trim();
             if(this.searchString == '') return;
             let KS = this.searchString;
-            this.searchString = '';
             this.$router.push({name:'search',params:{page:1},query:{keywordSearch:KS}});
         }
     }
@@ -42,8 +42,23 @@ export default {
 .search-keyword{
     width: 100%;
     position: relative;
-    &.focus{
+    &:focus-within{
         z-index: 10;
+        button{
+            display: block;
+        }
+        input{
+            border: 1px solid #ffffff;
+            background-color: #ffe2d1;
+            outline: none;
+        }
+        label{
+            right: calc(100% - 45px);
+            background-color: transparent;
+            i{
+                color: #000000;
+            }
+        }
     }
     button{
         z-index: 11;
@@ -59,9 +74,6 @@ export default {
         border-bottom-right-radius: 50px;
         border: none;
         cursor: pointer;
-        &.focus{
-            display: block;
-        }
     }
     label{
         z-index: 5;
@@ -86,23 +98,8 @@ export default {
         padding-left: 45px;
         border: 1px solid transparent;
         border-radius: 50px;
-        box-shadow: 0px 0px 10px
-            rgba($color: #000000, $alpha: 0.12);
-        &:focus-visible{
-            border: 1px solid #ffffff;
-            background-color: #ffe2d1;
-            outline: none;
-        }
-        &:focus-visible + label{
-            right: calc(100% - 45px);
-            background-color: transparent;
-            i{
-                color: #000000;
-            }
-        }
-        &:focus-visible ~ button{
-            display: block;
-        }
+        background-color: #ffffff !important;
+        box-shadow: 0px 0px 10px rgba($color: #000000, $alpha: 0.12);
     }
 }
 </style>

@@ -108,6 +108,7 @@ section{
   color: #2c3e50;
   width: 100%;
   overflow-x: hidden;
+  padding-top: 84px;
 }
 .phone-device{
   display: none;

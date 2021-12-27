@@ -31,9 +31,14 @@ export default {
         },
         routerChange(){
             this.trim();
-            if(this.searchString == '') return;
             let KS = this.searchString;
             this.$router.push({name:'search',params:{page:1},query:{keywordSearch:KS}});
+        }
+    },
+    watch:{
+        $route(){
+            this.searchString = ''
+            this.isFocus = false;
         }
     }
 }

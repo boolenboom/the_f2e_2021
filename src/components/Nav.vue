@@ -5,7 +5,7 @@
                 <button class="button-switch" @click="SwitchHandler('searchFullpage')"><img src="../assets/icon/tool/search-primary.png" alt="" srcset=""></button>
                 <div class="search-fullpage container" :class="{'fullpage-default':!switchName.searchFullpage}">
                     <button class="button-cancel" @click="SwitchHandler('searchFullpage',false)"><img src="../assets/icon/tool/close-white.png" alt="" srcset=""></button>
-                    <div class="keyword-layout" @change="collapseMenu">
+                    <div class="keyword-layout" >
                         <keyword-search/>
                     </div>
                     <div class="condition-layout">
@@ -39,7 +39,7 @@ li{
 #nav{
     width: 100%;
     box-shadow: 0px 4px 8px rgba(38, 38, 38, 0.06);
-    position: sticky;
+    position: fixed;
     transition: top .3s ease;
     background-color: #ffffff;
     z-index: 500;
@@ -201,6 +201,9 @@ export default {
     watch:{
         pageTop(newVal, oldVal){
             this.navShow = newVal - oldVal < 0 ? true : false;
+        },
+        $route(){
+            this.collapseMenu();
         }
     },
     mounted(){

@@ -17,14 +17,25 @@ import herocard from "@/components/Hero_Card.vue";
 import list from "@/components/List.vue";
 import pagination from "@/components/Pagination.vue";
 import { subHeroImgs as hashImgs } from "@/assets/filenameHashList.js";
-import fetcherConstructer from "@/assets/APIFetcher.js";
+import fetcherConstructer from "@/assets/fetcherFactory.js";
 
 let selectMatch = {
   ScenicSpot:
-    "ID,Name,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address",
-  Restaurant: "ID,Name,RestaurantName,Class,City,Picture,Phone,Address",
-  Activity: "ID,Name,StartTime,EndTime,Class1,Class2,Picture",
+    "ScenicSpotID,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address",
+  Restaurant: "RestaurantID,RestaurantName,Class,City,Picture,Phone,Address",
+  Activity: "ActivityID,ActivityName,StartTime,EndTime,Class1,Class2,Picture",
 };
+
+function combineKeywordToFilter( keywordString, category ){
+  let keywordAry = String(keywordString).split(' ');
+  let filterString = keywordAry.reduce((acc,curr,index)=>{
+    return acc + 
+      (index == 0 ? '' : ' or ') + 
+      `contains(${category}Name, '${curr}') or contains(Address, '${curr}')`
+  },'');
+  return filterString;
+}
+
 export default {
     name:'search',
     components:{
@@ -57,44 +68,30 @@ export default {
     methods: {
         runFetch(routeObj) {
           let routeSet = routeObj || this.$route;
-          let keywordAry = String(routeSet.query.keywordSearch).split(' ');
-          let filterString = keywordAry.reduce((acc,curr,index)=>{
-            return acc + 
-            (index == 0 ? '' : ' or ') + 
-            `contains(Name, '${curr}') or contains(Address, '${curr}')`
-            },'')
+
           this.JSONData = [];
           this.dataLength = 0;
+
           let vueObj = this;
           let fetcher = [
-            new fetcherConstructer("Tourism", "Activity")
-            ,new fetcherConstructer("Tourism", "Restaurant")
-            ,new fetcherConstructer("Tourism", "ScenicSpot")];
-          console.log(filterString, fetcher.map(el=>el.getUrl()));
+            new fetcherConstructer('PTXData', "Tourism", "Activity")
+            ,new fetcherConstructer('PTXData', "Tourism", "Restaurant")
+            ,new fetcherConstructer('PTXData', "Tourism", "ScenicSpot")];
           fetcher.forEach((handler)=>{
-              handler.setQuery(
-              {top:10000
-              ,select:selectMatch[handler.getCategory()]
-              ,filter:filterString})
+              handler.setQuery({
+                top:10000,
+                select:selectMatch[handler.getCategory()],
+                filter:combineKeywordToFilter( routeSet.query.keywordSearch, handler.getCategory() )
+              });
             });
           fetcher.forEach((handler)=>{
-            fetch(handler.getUrl(),handler.getHeader())
-              .then(function(res){return res.json();})
-              .then(function(data){
-                console.log(handler.getCategory() + "原始獲取資料長度:" + data.length);
-                let filterData = Array.from(data).filter(
-                  (el) => (el.Picture?.PictureUrl1)
-                );
-                console.log(handler.getCategory() + "過濾獲取資料長度:" + filterData.length);
-                let addLength = vueObj.dataLength + (+filterData.length);
-                vueObj.dataLength = addLength;
-                vueObj.JSONData = [...vueObj.JSONData, ...filterData.map(data=>{return {...data,category:handler.getCategory()}})]
+            handler.getAPIData( 'search-' + handler.getCategory(), 
+              function(data){
+                vueObj.dataLength += data.length;
+                vueObj.JSONData.push(...data);
               })
-              .catch(function (error) {
-                console.warn(error);
-              });
-          }); //抓資料
-          window.scrollTo(0,0);
+            window.scrollTo(0,0);
+          });
         },
     },
     watch: {

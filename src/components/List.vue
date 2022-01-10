@@ -4,15 +4,15 @@
             <li v-for="cardData of cardsData" :key='cardData.ID'>
                 <router-link :to="`/content/${cardData.category}/${cardData.ID}`">
                     <scenicspotcard
-                    v-if="cardData.category === 'ScenicSpot'"
+                    v-if="cardData.Category === 'ScenicSpot'"
                     :cardInfo="cardData"
                     />
                     <activitycard
-                    v-if="cardData.category === 'Activity'"
+                    v-if="cardData.Category === 'Activity'"
                     :cardInfo="cardData"
                     />
                     <foodcard
-                    v-if="cardData.category === 'Restaurant'"
+                    v-if="cardData.Category === 'Restaurant'"
                     :cardInfo="cardData"
                     />
                 </router-link>

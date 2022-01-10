@@ -106,24 +106,17 @@
 }
 </style>
 <script>
-// import card from '@/components/Hero_Card.vue';
 import handlerConstructer from '@/assets/carouselInteractive.js';
 let indicatorTypeMatch=['point','next/prev'];
+
 export default {
     name:'carousel',
-    // components:{
-    //     card,
-    // },
     props:{
         themeType:{type:String,default:''},
         cardsData:{
             type:Array,
             dafault:[]
         },
-        // viewAmount:{
-        //     type:Number,
-        //     default:1
-        // },
         indicatorType:{
             type:String,
             default:'point',
@@ -141,7 +134,6 @@ export default {
     },
     methods:{
         slideHandler(e){
-            console.log(e.type)
             let vueObj = this;
             window.requestAnimationFrame(function(){
                 let result = vueObj.carouselHandler[e.type](e.x || e.changedTouches[0].clientX, vueObj.currentIndex);
@@ -156,12 +148,12 @@ export default {
     watch:{
         cardsData(newArr){
             console.log('watch upadte');
-            this.carouselHandler.setClampOption(true,0,newArr.length - 1);
+            this.carouselHandler.setClampOption( true, 0, newArr.length - 1 );
         }
     },
     mounted(){
         console.log('mounted upadte',this.indicatorType);
-        this.carouselHandler.setClampOption(true,0,this.cardsData.length - 1);
+        this.carouselHandler.setClampOption( true, 0, this.cardsData.length - 1 );
     }
 }
 </script>

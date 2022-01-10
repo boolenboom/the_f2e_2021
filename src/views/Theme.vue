@@ -19,36 +19,31 @@ import list from "@/components/List.vue";
 import pagination from "@/components/Pagination.vue";
 import advancefilter from "@/components/Advanced_Filter.vue";
 import { subHeroImgs as hashImgs } from "@/assets/filenameHashList.js";
-import fetcherConstructer from "@/assets/APIFetcher.js";
+import fetcherConstructer from "@/assets/fetcherFactory.js";
 
 let selectMatch = {
   ScenicSpot:
-    "ID,Name,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address",
-  Restaurant: "ID,Name,RestaurantName,Class,City,Picture,Phone,Address",
-  Activity: "ID,Name,StartTime,EndTime,Class1,Class2,Picture",
+    "ScenicSpotID,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address",
+  Restaurant: "RestaurantID,RestaurantName,Class,City,Picture,Phone,Address",
+  Activity: "ActivityID,ActivityName,StartTime,EndTime,Class1,Class2,Picture",
 };
+
 function queryFilter(element = {}, factor_city = [], factor_class = []) {
   if (factor_city.length == 0 && factor_class.length == 0) return true;
   let address = String(element.Address);
-  let classStr =
-    element?.Class +
-    "," +
-    element?.Class1 +
-    "," +
-    element?.Class2 +
-    "," +
-    element?.Class3;
-  let result = [false,false];
-  if(factor_city.length == 0) result[0] = true;
-  if(factor_class.length == 0) result[1] = true;
+  let classStr = String(element.ClassTags);
+  let judge = [false,false];
+  if(factor_city.length == 0) judge[0] = true;
+  if(factor_class.length == 0) judge[1] = true;
   factor_city.forEach((fact) => {
-    if (address.includes(fact)) result[0] = true;
+    if (address.includes(fact)) judge[0] = true;
   });
   factor_class.forEach((fact) => {
-    if (classStr.includes(fact)) result[1] = true;
+    if (classStr.includes(fact)) judge[1] = true;
   });
-  return result[0] && result[1];
+  return judge[0] && judge[1];
 };
+
 export default {
   name: "theme",
   components: {
@@ -65,7 +60,6 @@ export default {
   },
   computed: {
     heroData() {
-      console.log(heroJSON, this.$route.params.category);
       let obj = heroJSON[this.$route.params.category];
       return { ...obj, imgSrc: hashImgs[+obj.imgIndex] };
     },
@@ -80,34 +74,28 @@ export default {
       let routeSet = routeObj || this.$route;
       let cities = routeSet.query.cities != undefined ? String(routeSet.query.cities).split(",") : [];
       let tagClass = routeSet.query.class != undefined ? String(routeSet.query.class).split(",") : [];
-      let fetcher = fetcherConstructer("Tourism", routeSet.params.category); //抓資料
+      let fetcher = fetcherConstructer( 'PTXData', "Tourism", routeSet.params.category); //抓資料
       fetcher.setQuery({
         top: 10000,
         select: selectMatch[routeSet.params.category || "Activity"],
       });
 
       let vueObj = this;
-      fetch(fetcher.getUrl(), fetcher.getHeader())
-        .then(function (response) {
-          return response.json();
-        })
-        .then(function (data) {
+      fetcher.getAPIData( 'theme-list', function (data) {
           console.log("原始獲取資料長度:" + data.length);
           let filterData = Array.from(data).filter(
-            (el) => (el.Picture?.PictureUrl1 && queryFilter(el, cities, tagClass))
+            (el) => (queryFilter(el, cities, tagClass))
           );
           console.log("過濾獲取資料長度:" + filterData.length);
           vueObj.dataLength = filterData.length;
-          vueObj.JSONData = filterData.map(data=>{return {...data,category:routeSet.params.category}});
-        })
-        .catch(function (error) {
-          console.warn(error);
+          vueObj.JSONData = filterData;
+          window.scrollTo(0,0);
         });
-        window.scrollTo(0,0);
     },
   },
   watch: {
-    $route(to) {
+    $route( to, from ) {
+      if( to == from ) return;
       this.runFetch(to);
     },
   },

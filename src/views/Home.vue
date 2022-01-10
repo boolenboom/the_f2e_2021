@@ -1,13 +1,9 @@
 <template>
   <div class="home">
-    <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
-    <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
     <hero />
     <activity />
     <scenicspot />
     <food />
-    <!-- <FetchResult />
-    <worldMap /> -->
   </div>
 </template>
 <style lang="scss">

@@ -54,7 +54,7 @@ import carousel from '@/components/Carousel.vue';
 import activitycard from "@/components/Activity_Card.vue";
 import scenicspotcard from "@/components/Scenicspot_Card.vue";
 import foodcard from "@/components/Food_Card.vue";
-import fetcherConstructer from "@/assets/APIFetcher.js";
+import fetcherConstructer from "@/assets/fetcherFactory.js";
 let selectMatch = {
     ScenicSpot:"ID,Name,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address",
     Restaurant: "ID,Name,RestaurantName,Class,City,Picture,Phone,Address",
@@ -70,93 +70,61 @@ export default {
     },
     data(){
         return{
-            JSONData:[],
+            detailJSON:[],
             optionJSON:[]
         }
     },
     computed:{
         imgData(){
             let ary = [];
-            let srcAry = [];
-            let descrAry = [];
-            let obj = this.JSONData.Picture;
-            for (const key in obj) {
-                console.log(key.includes('Url'));
-                if (key.includes('Url')) {
-                    srcAry.push(obj[key]);
-                }
-                if (key.includes('Description')) {
-                    descrAry.push(obj[key]);
-                }
-            }
-            ary = srcAry.map((src,index)=>{return{ID:this.JSONData.ID + index + '',img:src,descr:descrAry[index]}});
+            let srcAry = this.detailJSON.PictureUrl;
+            let descrAry = this.detailJSON.PictureDescri;
+            ary = srcAry.map((src,index)=>{return{ID:this.detailJSON.ID + index + '',img:src,descr:descrAry[index]}});
             return ary;
         },
         info(){
-            let classArr = [];
-            let obj = this.JSONData;
-            for (const key in obj) {
-                if (key.includes('Class')) {
-                    classArr.push(obj[key]);
-                }
-            };''.split
             return{
-                name:this.JSONData.Name || '無名',
-                classTags:classArr,
-                organizer: this.JSONData?.Organizer || '',
-                phone: this.JSONData?.Phone || '',
-                website: this.JSONData?.WebsiteUrl || '',
-                mapUrl: this.JSONData?.MapUrl || '',
-                address: this.JSONData?.Address || '',
-                openTime: this.JSONData?.OpenTime 
-                    || String(this.JSONData?.StartTime).split('T')[0] 
-                        + '~' 
-                        + String(this.JSONData?.EndTime).split('T')[0] 
-                    ||'',
-                intro:this.JSONData.DescriptionDetail || this.JSONData.Description
+                name: this.detailJSON.Name || '無名',
+                classTags: this.detailJSON.ClassTags,
+                organizer: this.detailJSON.Organizer || '',
+                phone: this.detailJSON.Phone || '',
+                website: this.detailJSON.WebsiteUrl || '',
+                mapUrl: this.detailJSON.MapUrl || '',
+                address: this.detailJSON.Address || '',
+                openTime: this.detailJSON.OpenTime ||'',
+                intro: this.detailJSON.Description || ''
             }
         }
     },
     methods:{
         runFetch(routeObj){
             let routeSet = routeObj || this.$route;
-            let fetcher = fetcherConstructer("Tourism", routeSet.params.category);
-            fetcher.setQuery({top:1,filter:`ID eq '${routeSet.params.id}'`});
+            let fetcher = fetcherConstructer("PTXData", "Tourism", routeSet.params.category);
+            fetcher.setQuery({top:1,filter:`${routeSet.params.category}ID eq '${routeSet.params.id}'`});
+            
             let vueObj = this;
-            fetch(fetcher.getUrl(), fetcher.getHeader())
-                .then(function (response) {
-                return response.json();
-                })
-                .then(function (data) {
-                vueObj.JSONData = data[0];
+            fetcher.getAPIData( 'content-detail', function ( data ) {
                 vueObj.runOptionFetch(routeSet, data[0].Address, data[0].ID)
-                })
-                .catch(function (error) {
-                console.warn(error);
-                });
+                vueObj.detailJSON = data[0];
                 window.scrollTo(0,0);
+            });
         },
-        runOptionFetch(routeObj,address,currID){
+        runOptionFetch( routeObj, address, currID ){
             let routeSet = routeObj || this.$route;
-            let fetcher = fetcherConstructer("Tourism", routeSet.params.category);
-            fetcher.setQuery({top:10000
-                ,filter:`contains(Address,'${String(address).slice(0,3)}') or contains(ID,'${String(currID).slice(0,12)}')`
-                ,select:selectMatch[routeSet.params.category || "Activity"]});
+            let fetcher = fetcherConstructer("PTXData", "Tourism", routeSet.params.category);
+            fetcher.setQuery({
+                top:10000,
+                filter:`contains(Address,'${String(address).slice(0,3)}') or 
+                    contains(${routeSet.params.category}ID,'${String(currID).slice(0,12)}')`,
+                select:selectMatch[routeSet.params.category || "Activity"],
+            });
+            
             let vueObj = this;
-            fetch(fetcher.getUrl(), fetcher.getHeader())
-                .then(function (response) {
-                return response.json();
-                })
-                .then(function (data) {
-                let filterData = Array.from(data).filter(
-                    el => el.Picture?.PictureUrl1
-                );
-                let length = filterData.length;
-                vueObj.optionJSON = filterData.splice(Math.floor(Math.random() * +(length - 15)),15);
-                })
-                .catch(function (error) {
-                console.warn(error);
-                });
+            fetcher.getAPIData( 'content-option', function ( data ) {
+                vueObj.runOptionFetch(routeSet, data[0].Address, data[0].ID)
+                vueObj.optionJSON = data[0];
+                window.scrollTo(0,0);
+            });
         }
     },
     watch:{

@@ -24,7 +24,7 @@
                     @click="switchOpts('category')" srcset="">
                 <div class="options" :class="{'show':listName['category']}">
                     <label v-for="classTag of classTags" class="b3 d-block" 
-                    :class="{'selected':category.indexOf(classTag)>-1}" :key="classTag">
+                    :class="{ 'selected': category.indexOf( classTag ) > -1 }" :key="classTag">
                         <input type="checkbox" name="category" hidden :value="classTag" v-model="category">
                         {{classTag}}
                     </label>
@@ -34,7 +34,8 @@
         </form>
 </template>
 <script>
-import fetcherConstructer from '@/assets/APIFetcher.js';
+import fetcherConstructer from '@/assets/fetcherFactory.js';
+let fetcher = new fetcherConstructer( 'PTXData', 'Tourism', 'Activity' );
 export default {
     name:'filterSearch',
     data(){
@@ -101,32 +102,22 @@ export default {
             return this.category.length > 0 ? '已選' + this.category.length + '種' : false;
         },
         classTags(){
-            let matchList = this.themeMatch[this.themeType].split(',');
             let tagNameList = [];
-            console.log(matchList);
-            let foo = Array.from(this.tagArr).filter(obj=>'Class' in obj||'Class1' in obj||'Class2' in obj||'Class3' in obj);
-            foo.forEach(el=>{
-                matchList.forEach(matchName=>{
-                    if(el[matchName] != undefined && tagNameList.indexOf(el[matchName]) === -1)tagNameList.push(el[matchName]);
+            let tagGroup = this.tagArr;
+            tagGroup.forEach(tagList=>{
+                tagList.ClassTags.forEach(tag=>{
+                    if(tagNameList.indexOf(tag) === -1) tagNameList.push(tag);
                 });
             });
-            console.log('computed');
             return tagNameList;
         }
     },
     methods:{
-        runFetch(url,header){
+        runFetch(){
             let vueObj=this;
-            fetch(url,header)
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (data){
-                vueObj.tagArr = Array.from(data);
-                // isLoaded=false;
-            })
-            .catch(function (error) {
-                console.warn(error);
+
+            fetcher.getAPIData( 'filter-theme', function ( data ) {
+                vueObj.tagArr = data;
             });
         },
         switchOpts(val,setBoolen){
@@ -147,15 +138,15 @@ export default {
     },
     watch:{
         themeType(newVal){
-            let fetcher = fetcherConstructer('Tourism',newVal);
-            fetcher.setQuery({top:10000,select:this.themeMatch[newVal]});
-            this.runFetch(fetcher.getUrl(),fetcher.getHeader());
+            fetcher.setUrlType( {CATEGORY:newVal} )
+            fetcher.setQuery( {top:10000, select:this.themeMatch[newVal]} );
+            this.runFetch();
         }
     },
     mounted(){
-        let fetcher = fetcherConstructer('Tourism',this.themeType);
-        fetcher.setQuery({top:10000,select:this.themeMatch[this.themeType]});
-        this.runFetch(fetcher.getUrl(),fetcher.getHeader());
+        fetcher.setUrlType( {CATEGORY: this.themeType} );
+        fetcher.setQuery( {top:10000, select:this.themeMatch[this.themeType]} );
+        this.runFetch();
     }
 }
 </script>

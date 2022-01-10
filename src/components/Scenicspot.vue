@@ -43,8 +43,8 @@
 <script>
 import carousel from '@/components/Carousel.vue';
 import scenicspotcard from '@/components/Scenicspot_Card.vue';
-import fetcherConstructer from '@/assets/APIFetcher.js';
-let fetcher = fetcherConstructer('Tourism','ScenicSpot');
+import fetcherConstructer from '@/assets/fetcherFactory.js';
+let fetcher = fetcherConstructer( 'PTXData', 'Tourism', 'ScenicSpot' );
 export default {
     name:'scenicspot',
     components:{
@@ -58,19 +58,12 @@ export default {
     },
     mounted(){
         let vueObj=this;
-        fetcher.setQuery({top:5000,select:'ID,Name,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address'});
-        fetch(fetcher.getUrl(),fetcher.getHeader())
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data){
-            let filterData = Array.from(data).filter(el=>el.Picture?.PictureUrl1);
-            vueObj.JSONData = filterData.splice(0,14);
-            // isLoaded=false;
-        })
-        .catch(function (error) {
-            console.warn(error);
-        });
+        fetcher.setQuery({top:5000});
+
+        fetcher.getAPIData( 'home-ScenicSpot', function ( data ) {
+            let randomIndex = Math.random * ( data.length - 14 );
+            vueObj.JSONData = data.splice( randomIndex, 14 );
+        } );
     }
 }
 </script>

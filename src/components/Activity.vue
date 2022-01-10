@@ -13,8 +13,8 @@
 <script>
 import carousel from '@/components/Carousel.vue';
 import activitycard from '@/components/Activity_Card.vue';
-import fetcherConstructer from '@/assets/APIFetcher.js';
-let fetcher = fetcherConstructer('Tourism','Activity');
+import fetcherConstructer from '@/assets/fetcherFactory.js';
+let fetcher = fetcherConstructer( 'PTXData', 'Tourism', 'Activity' );
 export default {
     name:'activity',
     components:{
@@ -27,19 +27,12 @@ export default {
         }
     },
     mounted(){
-        let vueObj=this;
         fetcher.setQuery({top:10000});
-        fetch(fetcher.getUrl(),fetcher.getHeader())
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data){
-            let filterData = Array.from(data).filter(el=>el.Picture?.PictureUrl1);
-            vueObj.JSONData = filterData.splice(0,5);
-            // isLoaded=false;
-        })
-        .catch(function (error) {
-            console.warn(error);
+
+        let vueObj=this;
+        fetcher.getAPIData( 'home-Activity', function ( data ) {
+            let randomIndex = Math.random * (data.length - 5);
+            vueObj.JSONData = data.splice( randomIndex, 5 );
         });
     }
 }

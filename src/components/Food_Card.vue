@@ -7,7 +7,7 @@
             <img :src="info.imgSrc" alt="scenic spot image" srcset="">
         </div>
         <div class="textInfo d-flex" draggable="false">
-            <h5  class="info-name">{{info.restaurantName}}</h5>
+            <h5  class="info-name">{{info.cardName}}</h5>
             <div class="info-city b2 d-flex">
                 <img src="@/assets/icon/inform/location.png" alt="location icon" srcset="" class="d-block">
                 <span class="d-block">{{info.city}}</span>
@@ -33,17 +33,12 @@ export default {
     },
     computed:{
         info(){
-            let classArr=[];
-            [this.cardInfo.Class,this.cardInfo?.Class2,this.cardInfo?.Class3].
-            forEach(el=>{
-                if(el!==undefined)classArr.push(el)
-                });
             return {
-                classTags:classArr,
-                imgSrc:this.cardInfo.Picture.PictureUrl1,
-                restaurantName:this.cardInfo.RestaurantName || this.cardInfo.Name || '無活動名稱',
-                city:this.cardInfo.City || this.cardInfo.Address,
-                phone:`${this.cardInfo.Phone}`.split(',')[0],
+                classTags: this.cardInfo.ClassTags,
+                imgSrc: this.cardInfo.PictureUrl,
+                Name: this.cardInfo.Name || '無名稱',
+                city: this.cardInfo.Address,
+                phone: this.cardInfo.Phone
             }
         }
     }

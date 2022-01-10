@@ -31,8 +31,8 @@
 <script>
 import carousel from '@/components/Carousel.vue';
 import foodcard from '@/components/Food_Card.vue';
-import fetcherConstructer from '@/assets/APIFetcher.js';
-let fetcher = fetcherConstructer('Tourism','Restaurant');
+import fetcherConstructer from '@/assets/fetcherFactory.js';
+let fetcher = fetcherConstructer( 'PTXData', 'Tourism', 'Restaurant' );
 export default {
     name:'food',
     components:{
@@ -45,20 +45,11 @@ export default {
         }
     },
     mounted(){
+        fetcher.setQuery( {top:5000,select:'RestaurantID,RestaurantName,Class,City,Picture,Phone'} );
         let vueObj=this;
-        fetcher.setQuery({top:15,skip:50,select:'ID,Name,RestaurantName,Class,City,Picture,Phone'});
-        fetcher.setOtherParam('NewTaipei');
-        fetch(fetcher.getUrl(),fetcher.getHeader())
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data){
-            console.log(data.length);
-            vueObj.JSONData = data;
-            // isLoaded=false;
-        })
-        .catch(function (error) {
-            console.warn(error);
+        fetcher.getAPIData( 'home-Restaurant', function ( data ) {
+            let randomIndex = Math.random * (data.length - 14);
+            vueObj.JSONData = data.splice( randomIndex, 14 );
         });
     }
 }

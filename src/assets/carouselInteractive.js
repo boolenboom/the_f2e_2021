@@ -4,10 +4,12 @@
     let inputRatio=0.04;
     let isClamp=true,clampMin=0,clampMax=5;
     function evalOffset(offset){
-        return isClamp ? Math.min(clampMax,Math.max(initial - (offset)*inputRatio, clampMin)) + 1 : initial - (offset)*inputRatio + 1;
+        return isClamp ? 
+            Math.min( clampMax, Math.max( initial - offset * inputRatio, clampMin ) ) + 1 : 
+            initial - offset * inputRatio + 1;
     }
     function evalEndTransform(endPoint){
-        return Math.round(evalOffset(endPoint - startPoint));
+        return Math.round( evalOffset( endPoint - startPoint ) );
     };
     return {
         pointermove:function(moveoffset){

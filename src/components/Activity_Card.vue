@@ -4,10 +4,12 @@
             <img :src="info.imgSrc" alt="activity image" srcset="">
         </div>
         <div class="textInfo" draggable="false">
-            <h3 class="info-name">{{info.activityName}}</h3>
+            <h3 class="info-name">{{info.cardName}}</h3>
             <h3 class="info-duration">{{info.duration}}</h3>
             <ul class="info-class d-flex">
-                <li v-for="classTag of info.classTags" :key='classTag' class="class-tag">{{classTag}}</li>
+                <li v-for="(classTag,index) of info.classTags" :key='classTag + index + info.id' class="class-tag">
+                    {{classTag}}
+                </li>
             </ul>
             <div class="info-organizer subt1">主辦單位：{{info.organizer}}</div>
             <p class="info-intro b1 pc-device" :class="{'text-overflow':info.desc.length > 100}">{{info.desc}}</p>
@@ -26,13 +28,13 @@ export default {
     computed:{
         info(){
             return {
-                id:this.cardInfo.ID,
-                imgSrc:this.cardInfo.Picture.PictureUrl1 || '',
-                activityName:this.cardInfo.ActivityName || this.cardInfo.Name || '無活動名稱',
-                duration:String(this.cardInfo.StartTime).split('T')[0] + '~' + String(this.cardInfo.EndTime).split('T')[0],
-                classTags:[this.cardInfo.Class1,this.cardInfo?.Class2],
-                organizer:this.cardInfo.Organizer,
-                desc:this.cardInfo.Description || ''
+                id: this.cardInfo.ID,
+                imgSrc: this.cardInfo.PictureUrl[0] || '',
+                cardName: this.cardInfo.Name || '無活動名稱',
+                duration: this.cardInfo.OpenTime,
+                classTags: this.cardInfo.ClassTags,
+                organizer: this.cardInfo.Organizer,
+                desc: this.cardInfo.Description || ''
             }
         }
     }

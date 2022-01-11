@@ -14,11 +14,11 @@ let factoryStrategies = {
 
         let base= BASEURL || 'https://ptx.transportdata.tw/MOTC/v2/';
         //Auth key
-        let AppID = 'eb78cef36689451a8aab0db192c90462';
-        let AppKey = 'BcSgzENVt1N5FxsK0SOjFiAU3eA';
+        // let AppID = 'eb78cef36689451a8aab0db192c90462';
+        // let AppKey = 'BcSgzENVt1N5FxsK0SOjFiAU3eA';
         //initial setting
         mountObj.setUrl( paramsCombineToUrl );
-        mountObj.setHeader( AppID, AppKey );
+        mountObj.setHeader( /*AppID, AppKey*/ );
         mountObj.setDataMiddleHandler( APIDataFormatToFrontEndData );
 
         //custom methods

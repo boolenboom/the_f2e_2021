@@ -36,7 +36,7 @@ export default {
             return {
                 classTags: this.cardInfo.ClassTags,
                 imgSrc: this.cardInfo.PictureUrl,
-                Name: this.cardInfo.Name || '無名稱',
+                cardName: this.cardInfo.Name || '無名稱',
                 city: this.cardInfo.Address,
                 phone: this.cardInfo.Phone
             }

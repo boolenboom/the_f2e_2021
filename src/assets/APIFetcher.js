@@ -21,7 +21,7 @@ function fetcherGenerator( fetcher = {} ){
             let formatData = fn( data );
             afterAction( ...args, formatData );
         })
-        .catch( errMsg => console.log(errMsg) );
+        .catch( errMsg => console.warn(errMsg) );
     };
     fetcher.setHeader = function(
         AppID = 'FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF', 

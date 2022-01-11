@@ -1,8 +1,16 @@
 <template>
     <div class="carousel">
         <div v-if="indicatorType === 'next/prev'" class="controlButtons d-flex">
-            <button :disabled="currentIndex <= 0" class="button d-block" @click='buttonClickHandler(-1)'><img src="@/assets/icon/tool/arrow-left.png" class='d-block' alt="" srcset=""></button>
-            <button :disabled="currentIndex >= cardsData.length - 1" class="button d-block" @click='buttonClickHandler(1)'><img src="@/assets/icon/tool/arrow-right.png" class="d-block" alt="" srcset=""></button>
+            <button :disabled="currentIndex <= 0" 
+                class="button d-block" 
+                @click='buttonClickHandler(-1)'>
+                <img src="@/assets/icon/tool/arrow-left.png" class='d-block' alt="" srcset="">
+            </button>
+            <button :disabled="currentIndex >= cardsData.length - 1" 
+                class="button d-block" 
+                @click='buttonClickHandler(1)'>
+                <img src="@/assets/icon/tool/arrow-right.png" class="d-block" alt="" srcset="">
+            </button>
         </div>
         <div class="list d-flex" :class='{"sliding":isSliding}'
         @pointerdown.prevent='slideHandler' 

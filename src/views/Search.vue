@@ -28,7 +28,7 @@ let selectMatch = {
 
 function combineKeywordToFilter( keywordString, category ){
   let keywordAry = String(keywordString).split(' ');
-  let filterString = keywordAry.reduce((acc,curr,index)=>{
+  let filterString = keywordAry.reduce(( acc, curr, index )=>{
     return acc + 
       (index == 0 ? '' : ' or ') + 
       `contains(${category}Name, '${curr}') or contains(Address, '${curr}')`

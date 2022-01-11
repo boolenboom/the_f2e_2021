@@ -56,9 +56,9 @@ import scenicspotcard from "@/components/Scenicspot_Card.vue";
 import foodcard from "@/components/Food_Card.vue";
 import fetcherConstructer from "@/assets/fetcherFactory.js";
 let selectMatch = {
-    ScenicSpot:"ID,Name,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address",
-    Restaurant: "ID,Name,RestaurantName,Class,City,Picture,Phone,Address",
-    Activity: "ID,Name,StartTime,EndTime,Class1,Class2,Picture",
+    ScenicSpot:"ScenicSpotID,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address",
+    Restaurant: "RestaurantID,RestaurantName,Class,City,Picture,Phone,Address",
+    Activity: "ActivityID,ActivityName,StartTime,EndTime,Class1,Class2,Picture",
 };
 export default {
     name:'content',
@@ -79,7 +79,13 @@ export default {
             let ary = [];
             let srcAry = this.detailJSON.PictureUrl;
             let descrAry = this.detailJSON.PictureDescri;
-            ary = srcAry.map((src,index)=>{return{ID:this.detailJSON.ID + index + '',img:src,descr:descrAry[index]}});
+            ary = srcAry.map((src,index)=>{
+                return{
+                    ID:this.detailJSON.ID + index + '',
+                    img:src,
+                    descr:descrAry[index]
+                }
+            });
             return ary;
         },
         info(){
@@ -111,6 +117,7 @@ export default {
         },
         runOptionFetch( routeObj, address, currID ){
             let routeSet = routeObj || this.$route;
+            console.log(routeSet);
             let fetcher = fetcherConstructer("PTXData", "Tourism", routeSet.params.category);
             fetcher.setQuery({
                 top:10000,
@@ -121,14 +128,14 @@ export default {
             
             let vueObj = this;
             fetcher.getAPIData( 'content-option', function ( data ) {
-                vueObj.runOptionFetch(routeSet, data[0].Address, data[0].ID)
-                vueObj.optionJSON = data[0];
+                vueObj.optionJSON = data;
                 window.scrollTo(0,0);
             });
         }
     },
     watch:{
-        $route(to) {
+        $route( to, from ) {
+            if( to == from ) return;
             this.runFetch(to);
         }
     },

@@ -32,7 +32,7 @@
 import carousel from '@/components/Carousel.vue';
 import foodcard from '@/components/Food_Card.vue';
 import fetcherConstructer from '@/assets/fetcherFactory.js';
-let fetcher = fetcherConstructer( 'PTXData', 'Tourism', 'Restaurant' );
+let fetcher = fetcherConstructer('TDXapi');
 export default {
     name:'food',
     components:{
@@ -45,10 +45,14 @@ export default {
         }
     },
     mounted(){
-        fetcher.setQuery( {top:5000,select:'RestaurantID,RestaurantName,Class,City,Picture,Phone'} );
         let vueObj=this;
-        fetcher.getAPIData( 'home-Restaurant', function ( data ) {
-            let randomIndex = Math.random * (data.length - 14);
+        fetcher.getData( 'v2/Tourism/Restaurant?%24top={amount}&%24skip={skipRandom}&%24format=JSON', 
+        {
+            amount: String(Math.round(Math.random() * 15) + 20),
+            skipRandom: String(Math.round(Math.random() * 250 + Math.random() * 250)),
+        }, 
+        function ( data ) {
+            let randomIndex = Math.random() * (data.length - 14);
             vueObj.JSONData = data.splice( randomIndex, 14 );
         });
     }

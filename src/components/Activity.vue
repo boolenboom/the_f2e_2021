@@ -14,7 +14,7 @@
 import carousel from '@/components/Carousel.vue';
 import activitycard from '@/components/Activity_Card.vue';
 import fetcherConstructer from '@/assets/fetcherFactory.js';
-let fetcher = fetcherConstructer( 'PTXData', 'Tourism', 'Activity' );
+let fetcher = fetcherConstructer('TDXapi');
 export default {
     name:'activity',
     components:{
@@ -27,11 +27,11 @@ export default {
         }
     },
     mounted(){
-        fetcher.setQuery({top:10000});
+        let url = 'v2/Tourism/Activity?%24top=1000&%24format=JSON'
 
         let vueObj=this;
-        fetcher.getAPIData( 'home-Activity', function ( data ) {
-            let randomIndex = Math.random * (data.length - 5);
+        fetcher.getData( url,{} , function ( data ) {
+            let randomIndex = Math.random() * (data.length - 5);
             vueObj.JSONData = data.splice( randomIndex, 5 );
         });
     }

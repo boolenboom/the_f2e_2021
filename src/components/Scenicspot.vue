@@ -44,7 +44,7 @@
 import carousel from '@/components/Carousel.vue';
 import scenicspotcard from '@/components/Scenicspot_Card.vue';
 import fetcherConstructer from '@/assets/fetcherFactory.js';
-let fetcher = fetcherConstructer( 'PTXData', 'Tourism', 'ScenicSpot' );
+let fetcher = fetcherConstructer('TDXapi');
 export default {
     name:'scenicspot',
     components:{
@@ -57,11 +57,16 @@ export default {
         }
     },
     mounted(){
+        let url = 'v2/Tourism/ScenicSpot?%24top={amount}&%24skip={skipRandom}&%24format=JSON'
         let vueObj=this;
-        fetcher.setQuery({top:5000});
 
-        fetcher.getAPIData( 'home-ScenicSpot', function ( data ) {
-            let randomIndex = Math.random * ( data.length - 14 );
+        fetcher.getData( url, 
+        {
+            amount: String(Math.round(Math.random() * 15) + 20),
+            skipRandom: String(Math.round(Math.random() * 500 + Math.random() * 500)),
+        },
+        function ( data ) {
+            let randomIndex = Math.random() * ( data.length - 14 );
             vueObj.JSONData = data.splice( randomIndex, 14 );
         } );
     }

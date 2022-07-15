@@ -21,26 +21,23 @@ import advancefilter from "@/components/Advanced_Filter.vue";
 import { subHeroImgs as hashImgs } from "@/assets/filenameHashList.js";
 import fetcherConstructer from "@/assets/fetcherFactory.js";
 
-let selectMatch = {
-  ScenicSpot:
-    "ScenicSpotID,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address",
-  Restaurant: "RestaurantID,RestaurantName,Class,City,Picture,Phone,Address",
-  Activity: "ActivityID,ActivityName,StartTime,EndTime,Class1,Class2,Picture",
-};
-
 function queryFilter(element = {}, factor_city = [], factor_class = []) {
   if (factor_city.length == 0 && factor_class.length == 0) return true;
+
   let address = String(element.Address);
   let classStr = String(element.ClassTags);
   let judge = [false,false];
+
   if(factor_city.length == 0) judge[0] = true;
   if(factor_class.length == 0) judge[1] = true;
+
   factor_city.forEach((fact) => {
     if (address.includes(fact)) judge[0] = true;
   });
   factor_class.forEach((fact) => {
     if (classStr.includes(fact)) judge[1] = true;
   });
+
   return judge[0] && judge[1];
 };
 
@@ -65,7 +62,7 @@ export default {
     },
     pageData(){
       let page = this.$route.params.page;
-      let currPageData = Array.from(this.JSONData).splice(15*page,15);
+      let currPageData = this.dataLength > 15 ? Array.from(this.JSONData).splice(15*page,15) : this.JSONData;
       return currPageData;
     }
   },
@@ -74,14 +71,14 @@ export default {
       let routeSet = routeObj || this.$route;
       let cities = routeSet.query.cities != undefined ? String(routeSet.query.cities).split(",") : [];
       let tagClass = routeSet.query.class != undefined ? String(routeSet.query.class).split(",") : [];
-      let fetcher = fetcherConstructer( 'PTXData', "Tourism", routeSet.params.category); //抓資料
-      fetcher.setQuery({
-        top: 10000,
-        select: selectMatch[routeSet.params.category || "Activity"],
-      });
+      let fetcher = fetcherConstructer('TDXapi'); //抓資料
 
       let vueObj = this;
-      fetcher.getAPIData( 'theme-list', function (data) {
+      fetcher.getData( 'v2/Tourism/{category}?%24top=10000&%24format=JSON',
+      {
+        category: routeSet.params.category,
+      }, 
+      function (data) {
           console.log("原始獲取資料長度:" + data.length);
           let filterData = Array.from(data).filter(
             (el) => (queryFilter(el, cities, tagClass))
@@ -90,7 +87,7 @@ export default {
           vueObj.dataLength = filterData.length;
           vueObj.JSONData = filterData;
           window.scrollTo(0,0);
-        });
+      });
     },
   },
   watch: {

@@ -1,5 +1,5 @@
 <template>
-    <div id='content'>
+    <div id='content_intro'>
         <div class="detail-content d-grid container">
             <carousel :cardsData='imgData' class="content-carousel-overwrite" indicatorType='next/prev'>
                 <template v-slot:items='props'>
@@ -55,11 +55,7 @@ import activitycard from "@/components/Activity_Card.vue";
 import scenicspotcard from "@/components/Scenicspot_Card.vue";
 import foodcard from "@/components/Food_Card.vue";
 import fetcherConstructer from "@/assets/fetcherFactory.js";
-let selectMatch = {
-    ScenicSpot:"ScenicSpotID,ScenicSpotName,Class1,Class2,Class3,City,OpenTime,Picture,Address",
-    Restaurant: "RestaurantID,RestaurantName,Class,City,Picture,Phone,Address",
-    Activity: "ActivityID,ActivityName,StartTime,EndTime,Class1,Class2,Picture",
-};
+
 export default {
     name:'content',
     components:{
@@ -79,7 +75,7 @@ export default {
             let ary = [];
             let srcAry = this.detailJSON.PictureUrl;
             let descrAry = this.detailJSON.PictureDescri;
-            ary = srcAry.map((src,index)=>{
+            ary = srcAry && srcAry.map((src,index)=>{
                 return{
                     ID:this.detailJSON.ID + index + '',
                     img:src,
@@ -105,11 +101,14 @@ export default {
     methods:{
         runFetch(routeObj){
             let routeSet = routeObj || this.$route;
-            let fetcher = fetcherConstructer("PTXData", "Tourism", routeSet.params.category);
-            fetcher.setQuery({top:1,filter:`${routeSet.params.category}ID eq '${routeSet.params.id}'`});
+            let fetcher = fetcherConstructer('TDXapi');
             
             let vueObj = this;
-            fetcher.getAPIData( 'content-detail', function ( data ) {
+            fetcher.getData( 'v2/Tourism/{category}?%24top=1&%24filter={filter}&%24format=JSON', 
+            {
+                category: routeSet.params.category,
+                filter: `${routeSet.params.category}ID eq '${routeSet.params.id}'`
+            },function ( data ) {
                 vueObj.runOptionFetch(routeSet, data[0].Address, data[0].ID)
                 vueObj.detailJSON = data[0];
                 window.scrollTo(0,0);
@@ -118,16 +117,17 @@ export default {
         runOptionFetch( routeObj, address, currID ){
             let routeSet = routeObj || this.$route;
             console.log(routeSet);
-            let fetcher = fetcherConstructer("PTXData", "Tourism", routeSet.params.category);
-            fetcher.setQuery({
-                top:10000,
-                filter:`contains(Address,'${String(address).slice(0,3)}') or 
-                    contains(${routeSet.params.category}ID,'${String(currID).slice(0,12)}')`,
-                select:selectMatch[routeSet.params.category || "Activity"],
-            });
+            let fetcher = fetcherConstructer('TDXapi');
             
             let vueObj = this;
-            fetcher.getAPIData( 'content-option', function ( data ) {
+            fetcher.getData( 'v2/Tourism/{category}?%24top={amount}&%24skip={skipRandom}&%24filter={filter}&%24format=JSON',
+            {
+                category: routeSet.params.category,
+                amount: String(Math.round(Math.random() * 30) + 20),
+                skipRandom: String(Math.round(Math.random() * 250 + Math.random() * 250)),
+                filter:`contains(Address,'${String(address).slice(0,3)}') or 
+                    contains(${routeSet.params.category}ID,'${String(currID).slice(0,12)}')`,
+            }, function ( data ) {
                 vueObj.optionJSON = data;
                 window.scrollTo(0,0);
             });
@@ -145,7 +145,7 @@ export default {
 }
 </script>
 <style lang="scss">
-#content{
+#content_intro{
     .detail-content,.other-option{
         padding-top: 80px;
         padding-bottom: 80px;

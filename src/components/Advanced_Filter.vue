@@ -35,7 +35,7 @@
 </template>
 <script>
 import fetcherConstructer from '@/assets/fetcherFactory.js';
-let fetcher = new fetcherConstructer( 'PTXData', 'Tourism', 'Activity' );
+let fetcher = new fetcherConstructer('TDXapi');
 export default {
     name:'filterSearch',
     data(){
@@ -116,7 +116,11 @@ export default {
         runFetch(){
             let vueObj=this;
 
-            fetcher.getAPIData( 'filter-theme', function ( data ) {
+            fetcher.getData( 'v2/Tourism/{category}?%24top=10000&%24select={select}&%24format=JSON', 
+            {
+                category: this.themeType,
+                select: this.themeMatch[this.themeType]
+            }, function ( data ) {
                 vueObj.tagArr = data;
             });
         },
@@ -137,15 +141,11 @@ export default {
         }
     },
     watch:{
-        themeType(newVal){
-            fetcher.setUrlType( {CATEGORY:newVal} )
-            fetcher.setQuery( {top:10000, select:this.themeMatch[newVal]} );
+        themeType(){
             this.runFetch();
         }
     },
     mounted(){
-        fetcher.setUrlType( {CATEGORY: this.themeType} );
-        fetcher.setQuery( {top:10000, select:this.themeMatch[this.themeType]} );
         this.runFetch();
     }
 }

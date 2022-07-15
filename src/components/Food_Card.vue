@@ -4,7 +4,7 @@
             <li v-for="classTag of info.classTags" :key='classTag' class="class-tag">{{classTag}}</li>
         </ul>
         <div class="pic">
-            <img :src="info.imgSrc" alt="scenic spot image" srcset="">
+            <img :src="info.imgSrc" alt="food spot image" srcset="">
         </div>
         <div class="textInfo d-flex" draggable="false">
             <h5  class="info-name">{{info.cardName}}</h5>
@@ -35,7 +35,7 @@ export default {
         info(){
             return {
                 classTags: this.cardInfo.ClassTags,
-                imgSrc: this.cardInfo.PictureUrl,
+                imgSrc: this.cardInfo.PictureUrl[0]||'',
                 cardName: this.cardInfo.Name || '無名稱',
                 city: this.cardInfo.Address,
                 phone: this.cardInfo.Phone

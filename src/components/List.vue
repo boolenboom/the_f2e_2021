@@ -1,8 +1,8 @@
 <template>
     <div class="theme-list">
-        <ul class="d-grid container">
+        <ul v-if="!isLoading" class="d-grid container">
             <li v-for="cardData of cardsData" :key='cardData.ID'>
-                <router-link :to="`/content/${cardData.category}/${cardData.ID}`">
+                <router-link :to="`/content/${cardData.Category}/${cardData.ID}`">
                     <scenicspotcard
                     v-if="cardData.Category === 'ScenicSpot'"
                     :cardInfo="cardData"
@@ -18,10 +18,13 @@
                 </router-link>
             </li>
         </ul>
-        <div v-if="cardsData.length === 0" class="noResult">
+        <div v-if="cardsData.length === 0 && !isLoading" class="noResult">
             <img src="../assets/bg/img_no result.png" alt="no result" srcset="">
             <h2>搜尋不到資料</h2>
             <h5>請改用其他關鍵字試試</h5>
+        </div>
+        <div v-if="isLoading">
+            <h2>載入中...</h2>
         </div>
     </div>
 </template>
@@ -58,7 +61,8 @@ export default {
         foodcard,
     },
     props:{
-        cardsData:{type:Array}
+        cardsData:{type:Array},
+        isLoading:{type:Boolean,deault:false}
     }
 }
 </script>

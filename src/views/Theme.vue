@@ -74,7 +74,7 @@ export default {
       let fetcher = fetcherConstructer('TDXapi'); //抓資料
 
       let vueObj = this;
-      fetcher.getData( 'v2/Tourism/{category}?%24top=10000&%24format=JSON',
+      fetcher.getData( 'v2/Tourism/{category}?%24top=3000&%24format=JSON',
       {
         category: routeSet.params.category,
       }, 

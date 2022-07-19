@@ -1,7 +1,8 @@
 <template>
     <div id='content_intro'>
         <div class="detail-content d-grid container">
-            <carousel :cardsData='imgData' class="content-carousel-overwrite" indicatorType='next/prev'>
+            <carousel :cardsData='imgData' class="content-carousel-overwrite"
+                indicatorType='next/prev'>
                 <template v-slot:items='props'>
                     <img :src="props.cardInfo.img" :alt="props.cardInfo.descr" srcset="">
                 </template>
@@ -12,37 +13,37 @@
                     <li v-for="classTag of info.classTags" :key='classTag' class="class-tag">{{classTag}}</li>
                 </ul>
                 <div class="info-text">
-                    <div v-if="$route.params.category === 'Activity'" class="info-organizer"><img src="../assets/icon/inform/organizer-primary.png" alt="" srcset="">{{info.organizer}}</div>
-                    <div v-if="$route.params.category !== 'Activity'" class="info-phone d-flex"><span class="phone-number"><img src="../assets/icon/inform/phone-primary.png" alt="" srcset="">{{info.phone}}</span><a class="phone-contact" :href="`tel:+${info.phone}`">致電</a></div>
-                    <div v-if="$route.params.category !== 'Restaurant' && info.website != ''" class="info-site"><img src="../assets/icon/inform/web-primary.png" alt="" srcset=""><a :href="info.website">官方網站</a></div>
+                    <div v-if="$route.params.category === 'Activity'" class="info-organizer"><img
+                            src="../assets/icon/inform/organizer-primary.png" alt="" srcset="">{{info.organizer}}</div>
+                    <div v-if="$route.params.category !== 'Activity'" class="info-phone d-flex"><span
+                            class="phone-number"><img src="../assets/icon/inform/phone-primary.png" alt=""
+                                srcset="">{{info.phone}}</span><a class="phone-contact"
+                            :href="`tel:+${info.phone}`">致電</a></div>
+                    <div v-if="$route.params.category !== 'Restaurant' && info.website != ''" class="info-site"><img
+                            src="../assets/icon/inform/web-primary.png" alt="" srcset=""><a
+                            :href="info.website">官方網站</a></div>
                     <div class="info-address">
                         <img src="../assets/icon/inform/location-primary.png" alt="" srcset="">
                         <template v-if="info.mapUrl===''">{{info.address}}</template>
                         <template v-if="info.mapUrl!==''"><a :href="info.mapUrl">{{info.address}}</a></template>
                     </div>
-                    <div class="info-openTime"><img src="../assets/icon/inform/time-primary.png" alt="" srcset="">{{info.openTime}}</div>
+                    <div class="info-openTime"><img src="../assets/icon/inform/time-primary.png" alt=""
+                            srcset="">{{info.openTime}}</div>
                 </div>
             </div>
-            <div class="intro"><span>簡介: </span><p>{{info.intro}}</p></div>
+            <div class="intro"><span>簡介: </span>
+                <p>{{info.intro}}</p>
+            </div>
         </div>
         <div class="other-option">
             <div class="container">
                 <h2 class="carouselName">您可能喜歡</h2>
-                <carousel :cardsData='optionJSON' indicatorType='next/prev'
+                <carousel v-if="optionJSON.length > 0" :cardsData='optionJSON' indicatorType='next/prev'
                     :themeType='$route.params.category'>
                     <template v-slot:items='props'>
-                        <scenicspotcard
-                        v-if="$route.params.category === 'ScenicSpot'"
-                        :cardInfo="props.cardInfo"
-                        />
-                        <activitycard
-                        v-if="$route.params.category === 'Activity'"
-                        :cardInfo="props.cardInfo"
-                        />
-                        <foodcard
-                        v-if="$route.params.category === 'Restaurant'"
-                        :cardInfo="props.cardInfo"
-                        />
+                        <scenicspotcard v-if="$route.params.category === 'ScenicSpot'" :cardInfo="props.cardInfo" />
+                        <activitycard v-if="$route.params.category === 'Activity'" :cardInfo="props.cardInfo" />
+                        <foodcard v-if="$route.params.category === 'Restaurant'" :cardInfo="props.cardInfo" />
                     </template>
                 </carousel>
             </div>
@@ -94,7 +95,7 @@ export default {
                 mapUrl: this.detailJSON.MapUrl || '',
                 address: this.detailJSON.Address || '',
                 openTime: this.detailJSON.OpenTime ||'',
-                intro: this.detailJSON.Description || ''
+                intro: this.detailJSON.Description || this.detailJSON.DescriptionDetail || ''
             }
         }
     },
@@ -120,15 +121,14 @@ export default {
             let fetcher = fetcherConstructer('TDXapi');
             
             let vueObj = this;
-            fetcher.getData( 'v2/Tourism/{category}?%24top={amount}&%24skip={skipRandom}&%24filter={filter}&%24format=JSON',
+            fetcher.getData( 'v2/Tourism/{category}?%24top=3000&%24filter={filter}&%24format=JSON',
             {
                 category: routeSet.params.category,
-                amount: String(Math.round(Math.random() * 30) + 20),
-                skipRandom: String(Math.round(Math.random() * 250 + Math.random() * 250)),
                 filter:`contains(Address,'${String(address).slice(0,3)}') or 
                     contains(${routeSet.params.category}ID,'${String(currID).slice(0,12)}')`,
             }, function ( data ) {
-                vueObj.optionJSON = data;
+                let randomIndex = Math.floor(Math.random() * (data.length - 15));
+                vueObj.optionJSON = data.splice(randomIndex, 15);
                 window.scrollTo(0,0);
             });
         }

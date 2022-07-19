@@ -46,11 +46,8 @@ export default {
     },
     mounted(){
         let vueObj=this;
-        fetcher.getData( 'v2/Tourism/Restaurant?%24top={amount}&%24skip={skipRandom}&%24format=JSON', 
-        {
-            amount: String(Math.round(Math.random() * 15) + 20),
-            skipRandom: String(Math.round(Math.random() * 250 + Math.random() * 250)),
-        }, 
+        fetcher.getData( 'v2/Tourism/Restaurant?%24top=3000&%24format=JSON', 
+        {}, 
         function ( data ) {
             let randomIndex = Math.random() * (data.length - 14);
             vueObj.JSONData = data.splice( randomIndex, 14 );

@@ -31,8 +31,8 @@ export default {
 
         let vueObj=this;
         fetcher.getData( url,{} , function ( data ) {
-            let randomIndex = Math.random() * (data.length - 5);
-            vueObj.JSONData = data.splice( randomIndex, 5 );
+            let randomIndex = Math.floor(Math.random() * (data.length - 10));
+            vueObj.JSONData = data.splice( randomIndex, 10 );
         });
     }
 }

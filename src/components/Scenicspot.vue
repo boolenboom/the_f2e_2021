@@ -57,14 +57,11 @@ export default {
         }
     },
     mounted(){
-        let url = 'v2/Tourism/ScenicSpot?%24top={amount}&%24skip={skipRandom}&%24format=JSON'
+        let url = 'v2/Tourism/ScenicSpot?%24top=3000&%24format=JSON'
         let vueObj=this;
 
         fetcher.getData( url, 
-        {
-            amount: String(Math.round(Math.random() * 15) + 20),
-            skipRandom: String(Math.round(Math.random() * 500 + Math.random() * 500)),
-        },
+        {},
         function ( data ) {
             let randomIndex = Math.random() * ( data.length - 14 );
             vueObj.JSONData = data.splice( randomIndex, 14 );

@@ -6,7 +6,7 @@
         <h4>搜尋結果: </h4>
         <li v-for="classTag of searchFactor" :key='classTag' class="class-tag">{{ classTag }}</li>
       </ul>
-      <list :cardsData="pageData">
+      <list :cardsData="pageData" :isLoading="isLoading">
       </list>
       <pagination :dataAmount="dataLength" viewType='search' />
     </div>
@@ -41,6 +41,7 @@ export default {
     return {
       JSONData: [],
       dataLength: 0,
+      isLoading: false
     };
   },
   computed: {
@@ -55,7 +56,7 @@ export default {
     },
     pageData() {
       let page = this.$route.params.page;
-      let currPageData = Array.from(this.JSONData).splice(15 * page, 15);
+      let currPageData = Array.from(this.JSONData).splice(15 * (page - 1), 15);
       return currPageData;
     }
   },
@@ -67,8 +68,9 @@ export default {
       let routeSet = routeObj || this.$route;
 
       let vueObj = this;
-      let url = 'v2/Tourism/{category}?%24top=10000&%24filter={filter}&%24format=JSON';
+      let url = 'v2/Tourism/{category}?%24top=3000&%24filter={filter}&%24format=JSON';
       let fetcher = new fetcherConstructer('TDXapi');
+      this.isLoading = true;
       fetcher.getData( url,
         {
           category: 'Activity',
@@ -77,6 +79,7 @@ export default {
         function (data) {
           vueObj.dataLength += data.length;
           vueObj.JSONData.push(...data);
+          vueObj.isLoading = false;
         })
       fetcher.getData( url,
         {
@@ -86,6 +89,7 @@ export default {
         function (data) {
           vueObj.dataLength += data.length;
           vueObj.JSONData.push(...data);
+          vueObj.isLoading = false;
         })
       fetcher.getData( url,
         {
@@ -95,6 +99,7 @@ export default {
         function (data) {
           vueObj.dataLength += data.length;
           vueObj.JSONData.push(...data);
+          vueObj.isLoading = false;
         })
       window.scrollTo(0, 0);
     },

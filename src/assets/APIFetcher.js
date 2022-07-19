@@ -11,24 +11,27 @@ function fetcherGenerator( fetcher = {} ){
     };
 
     fetcher.getAPIData = function(){
-        let lastUrl = '';
         return function(){
             let afterAction = fetcher._shift.call( arguments );
             let args = arguments;
             let fn = fetcher._dataFn;
-            
-            if(lastUrl == fetcher.url){
-                let localData = JSON.parse(localStorage.getItem(lastUrl));
+            const url = fetcher.url;
+            const option = fetcher.option;
+
+            if(localStorage.getItem(url) !== null){
+                let localData = JSON.parse(localStorage.getItem(url));
                 afterAction( ...args, localData);
+                console.log('get same request data')
                 return;
             }
-            lastUrl = fetcher.url;
-
-            fetch( fetcher.url, fetcher.option )
+            
+            console.log('ready to connect: ' + url);
+            fetch( url, option )
             .then( res => res.json() )
             .then( data => {
                 let formatData = fn( data );
-                localStorage.setItem( fetcher.url, JSON.stringify(formatData) );
+                console.log(formatData + url)
+                localStorage.setItem( url, JSON.stringify(formatData) );
                 afterAction( ...args, formatData );
             })
             .catch( errMsg => console.warn(errMsg) );

@@ -25,25 +25,34 @@ let factoryStrategies = {
                     Name: item?.ActivityName || item?.RestaurantName || item?.ScenicSpotName || 'nameless',
                     Address: item?.Address || item?.City || 'no address data',
                     Location: item?.Location || '',
-                    DescriptionDetail: item?.DescriptionDetail || 'no detail',
-                    Description: item?.Description || 'no desccription',
+                    DescriptionDetail: item?.DescriptionDetail || '',
+                    Description: item?.Description || '',
                     Organizer: item?.Organizer || 'no organizer',
                     Phone: String( item.Phone ).split( '、' )[0] || 'no phone number',
-                    OpenTime: item?.OpenTime || String( item.StartTime ).split('T')[0] + '~' + String( item.EndTime ).split('T')[0],
+                    OpenTime: item?.OpenTime || (item?.StartTime ? String( item.StartTime ).split('T')[0] + '~' + String( item.EndTime ).split('T')[0] : undefined) || '無提供開放時段',
                     ClassTags: truthyPushArray( [item?.Class1, item?.Class2, item?.Class3] ),
                     WebsiteUrl: item?.WebsiteUrl || '',
                     MapUrl: item?.MapUrl || '',
-                    PictureUrl: truthyPushArray( [item.Picture?.PictureUrl1, item.Picture?.PictureUrl2, item.Picture?.PictureUrl3] ) || '',
+                    PictureUrl: urlMixedContentFixed( truthyPushArray( [item.Picture?.PictureUrl1, item.Picture?.PictureUrl2, item.Picture?.PictureUrl3] )) || '',
                     PictureDescri: truthyPushArray( [item.Picture?.PictureDescription1, item.Picture?.PictureDescription2, item.Picture?.PictureDescription3] ) || '',
                     Category: category
                 }
             });
             function truthyPushArray( dataArr ){
                 let truthyArr = [];
-                dataArr.forEach(el=>{
-                    if(el!==undefined)truthyArr.push(el);
-                });
+                for (let i=0;i < dataArr.length; i++) {
+                    if(dataArr[i]!==undefined)truthyArr.push(dataArr[i])
+                }
                 return truthyArr;
+            }
+            function urlMixedContentFixed( dataArr ){
+                let modArr = [...dataArr];
+                for (let i=0;i < dataArr.length; i++) {
+                    if(dataArr[i].includes('http:')){
+                        modArr[i] = modArr[i].replace('http:','https:');
+                    } 
+                }
+                return modArr;
             }
             return mapObj;
         }

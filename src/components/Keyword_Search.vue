@@ -8,8 +8,7 @@
                 aria-label="需要搜尋請輸入關鍵字"
                 required
                 v-model="searchString"
-                @change="trim"
-                @keyup.enter="routerChange">
+                @change="trim">
                 
             <label :for="uniqueID"><i class="gg-search"></i></label>
             <button @click.prevent="routerChange" >搜尋</button>

@@ -76,6 +76,9 @@ export default {
         width: 100%;
         object-fit: cover;
     }
+    background-image: url('../assets/bg/No_image_0.5x.png');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 .textInfo{
     width: 100%;
@@ -85,9 +88,7 @@ export default {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    .info-name{
-        margin-bottom: 8px;
-    }
+    gap: 12px;
     .info-city,.info-phone{
         color: #676767;
         img{

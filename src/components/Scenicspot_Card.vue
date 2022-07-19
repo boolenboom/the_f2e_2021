@@ -4,7 +4,7 @@
             <li v-for="classTag of info.classTags" :key='classTag' class="class-tag">{{classTag}}</li>
         </ul>
         <div class="pic">
-            <img :src="info.imgSrc" alt="scenic spot image" srcset="">
+            <img v-show="imgShow" :src="info.imgSrc" :alt="info.imgDesc" @error="elementHide">
         </div>
         <div class="textInfo" draggable="false">
             <h5  class="info-name">{{info.cardName}}</h5>
@@ -27,11 +27,23 @@ export default {
             type:Object,
         }
     },
+    data(){
+        return{
+            imgShow:true
+        }
+    },
+    methods:{
+        elementHide:function(){
+            console.log('image load error');
+            this.imgShow = false;
+        }
+    },
     computed:{
         info(){
             return {
                 classTags: this.cardInfo.ClassTags,
                 imgSrc: this.cardInfo.PictureUrl[0],
+                imgDesc: this.cardInfo.PictureDescri[0],
                 cardName: this.cardInfo.Name || '無活動名稱',
                 city: this.cardInfo.Address,
                 openTime: this.cardInfo.OpenTime,
@@ -71,6 +83,9 @@ export default {
         width: 100%;
         object-fit: cover;
     }
+    background-image: url('../assets/bg/No_image_0.5x.png');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 .textInfo{
     width: 100%;

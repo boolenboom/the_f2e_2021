@@ -13,7 +13,7 @@
             </ul>
             <div class="info-organizer subt1">主辦單位：{{info.organizer}}</div>
             <p class="info-intro b1 pc-device" :class="{'text-overflow':info.desc.length > 100}">{{info.desc}}</p>
-            <div class="info-detail title pc-device"><router-link :to="`/content/Activity/${info.id}`">詳細介紹</router-link></div>
+            <div class="info-detail title"><router-link :to="`/content/Activity/${info.id}`">詳細介紹</router-link></div>
         </div>
     </div>
 </template>
@@ -41,6 +41,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+
 .card{
     width: 100%;
     position: relative;
@@ -73,15 +74,27 @@ export default {
             border-radius: 0;
             background-color: #ff5c00;
             text-align: end;
-            .info-name,.info-duration,.info-organizer{
-                margin-bottom: 8px;
-            }
+            gap: 12px;
             .info-organizer{
                 width: 100%;
                 overflow-x: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
             }
+                        .info-detail {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+            
+                            a {
+                                color: transparent;
+                                display: block;
+                                height: 100%;
+                                content: "";
+                            }
+                        }
         }
     }
 }
@@ -98,6 +111,9 @@ export default {
         height: 100%;
         object-fit: cover;
     }
+    background-image: url('../assets/bg/No_image.png');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 .textInfo{
     grid-column: 7/ -1;
@@ -111,7 +127,7 @@ export default {
         color: #ffffff;
     }
     .info-name,.info-duration,.info-organizer{
-        margin-bottom: 24px;
+        margin-bottom: 8px;
     }
     .info-class{
         margin-bottom: 16px;

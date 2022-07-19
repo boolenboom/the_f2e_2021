@@ -22,6 +22,9 @@ export default {
   components:{
     navi,
     pagefooter
+  },
+  onUnmounted(){
+    localStorage.clear();
   }
 }
 </script>

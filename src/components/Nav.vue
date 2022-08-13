@@ -2,33 +2,47 @@
     <div id="nav" class="nav-default" :class="{'slide-down-show':navShow}">
         <div class="d-grid container align-center">
             <div class="search phone-device">
-                <button class="button-switch" @click="SwitchHandler('searchFullpage')"><img src="../assets/icon/tool/search-primary.png" alt="" srcset=""></button>
+                <button class="button-switch" @click="SwitchHandler('searchFullpage')"><img
+                        src="../assets/icon/tool/search-primary.png" alt="" srcset=""></button>
                 <div class="search-fullpage container" :class="{'fullpage-default':!switchName.searchFullpage}">
-                    <button class="button-cancel" @click="SwitchHandler('searchFullpage',false)"><img src="../assets/icon/tool/close-white.png" alt="" srcset=""></button>
-                    <div class="keyword-layout" >
-                        <keyword-search/>
+                    <button class="button-cancel" @click="SwitchHandler('searchFullpage',false)"><img
+                            src="../assets/icon/tool/close-white.png" alt="" srcset=""></button>
+                    <div class="keyword-layout">
+                        <keyword-search />
                     </div>
                     <div class="condition-layout">
                         <div class="title">篩選</div>
-                        <filter-search/>
+                        <filter-search :optionGroup="region" subStructName="zone" :categoryList="['Activity','ScenicSpot','Restaurant']" />
                     </div>
                 </div>
             </div>
-            <div class="logo"><router-link to="/"><img src="../assets/logo/logo_black.png" alt="官網logo" srcset=""></router-link></div>
-            
+            <div class="logo">
+                <router-link to="/"><img src="../assets/logo/logo_black.png" alt="官網logo" srcset=""></router-link>
+            </div>
+
             <div class="menu d-flex" :class="{'menu-default':!switchName.menuFullpage}">
-                <button class="button-cancel" @click="SwitchHandler('menuFullpage',false)"><img src="../assets/icon/tool/close-white.png" alt="" srcset=""></button>
+                <button class="button-cancel" @click="SwitchHandler('menuFullpage',false)"><img
+                        src="../assets/icon/tool/close-white.png" alt="" srcset=""></button>
                 <ul class="pages d-flex">
-                    <li class="pageOption" @click="SwitchHandler('menuFullpage',false)"><router-link to="/theme/Activity/1">活動介紹</router-link></li>
-                    <li class="pageOption" @click="SwitchHandler('menuFullpage',false)"><router-link to="/theme/ScenicSpot/1">旅遊景點</router-link></li>
-                    <li class="pageOption" @click="SwitchHandler('menuFullpage',false)"><router-link to="/theme/Restaurant/1">特色美食</router-link></li>
+                    <li class="pageOption" @click="SwitchHandler('menuFullpage',false)">
+                        <router-link to="/theme/Activity/1">活動介紹</router-link>
+                    </li>
+                    <li class="pageOption" @click="SwitchHandler('menuFullpage',false)">
+                        <router-link to="/theme/ScenicSpot/1">旅遊景點</router-link>
+                    </li>
+                    <li class="pageOption" @click="SwitchHandler('menuFullpage',false)">
+                        <router-link to="/theme/Restaurant/1">特色美食</router-link>
+                    </li>
                 </ul>
                 <div class="condition-layout pc-device">
-                    <keyword-search/>
+                    <keyword-search />
                 </div>
             </div>
-            <button class="button-switch phone-device" @click="SwitchHandler('menuFullpage')"><img src="../assets/icon/tool/menu.png" alt="" srcset=""></button>
-            <div class="advance pc-device"><filter-search /></div>
+            <button class="button-switch phone-device" @click="SwitchHandler('menuFullpage')"><img
+                    src="../assets/icon/tool/menu.png" alt="" srcset=""></button>
+            <div class="advance pc-device">
+                <filter-search :optionGroup="region" subStructName="zone" :categoryList="['Activity','ScenicSpot','Restaurant']" />
+            </div>
         </div>
     </div>
 </template>
@@ -180,7 +194,44 @@ export default {
             switchName:{
                 searchFullpage:false,
                 menuFullpage:false
-            }
+            },
+            region: [{
+                    zone: '北部',
+                    options: [
+                        { name: '臺北市', value: '臺北市' },
+                        { name: '新北市', value: '新北市' }, { name: '桃園市', value: '桃園市' },
+                        { name: '宜蘭縣', value: '宜蘭縣' }, { name: '基隆市', value: '基隆市' },
+                        { name: '新竹市', value: '新竹市' }, { name: '新竹縣', value: '新竹縣' }
+                    ]
+                },
+                {
+                    zone: '中部',
+                    options: [
+                        { name: '臺中市', value: '臺中市' },
+                        { name: '彰化縣', value: '彰化縣' }, { name: '苗栗縣', value: '苗栗縣' },
+                        { name: '南投縣', value: '南投縣' }, { name: '雲林縣', value: '雲林縣' }
+                    ]
+                },
+                {
+                    zone: '南部',
+                    options: [
+                        { name: '嘉義市', value: '嘉義市' },
+                        { name: '嘉義縣', value: '嘉義縣' },
+                        { name: '臺南市', value: '臺南市' }, { name: '高雄市', value: '高雄市' }, { name: '屏東縣', value: '屏東縣' }
+                    ]
+                },
+                {
+                    zone: '東部',
+                    options: [
+                        { name: '花蓮縣', value: '花蓮縣' }, { name: '臺東縣', value: '臺東縣' }
+                    ]
+                },
+                {
+                    zone: '離島',
+                    options: [
+                        { name: '澎湖縣', value: '澎湖縣' }, { name: '金門縣', value: '金門縣' }, { name: '連江縣', value: '連江縣' }
+                    ]
+                }]
         }
     },
     methods:{

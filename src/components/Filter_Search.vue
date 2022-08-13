@@ -1,66 +1,37 @@
 <template>
     <form action="#" class="search-filter d-flex">
-            <div class='filter-city'>
-                <div class="text subt2">{{ citySelected || '選擇城市'}}</div>
-                <img src="../assets/icon/tool/down.png" alt="" class="icon switch" @focus="switchOpts('city')" @blur="switchOpts('city')" tabindex="-1" srcset="">
-                <div class="options" :class="{'show':listName['city']}">
-                    <select name="filter-city" multiple id="filter-city" class="phone-device">
-                        <optgroup label="北部">
-                            <option value="taipei">臺北</option>
-                            <option value="taichung">臺中</option>
-                            <option value="newTaipei">新北</option>
-                        </optgroup>
-                        <optgroup label="中部">
-                            <option value="宜蘭">宜蘭</option>
-                            <option value="taichung">彰化</option>
-                            <option value="newTaipei">苗栗</option>
-                        </optgroup>
-                    </select>
-                    <div class="input-group pc-device d-flex">
-                        <fieldset>
-                            <legend>北部</legend>
-                            <label class="b3"><input type="checkbox" name="taipei" hidden value="taipei" v-model="cities">臺北市</label>
-                            <label class="b3"><input type="checkbox" name="newTaipei" hidden value="newTaipei" v-model="cities">新北市</label>
-                            <label class="b3"><input type="checkbox" name="宜蘭" hidden value="宜蘭" v-model="cities">宜蘭縣</label>
-                            <label class="b3"><input type="checkbox" name="機靈" hidden value="基隆" v-model="cities">基隆市</label>
-                        </fieldset>
-                        <fieldset>
-                            <legend>中部</legend>
-                            <label class="b3"><input type="checkbox" name="taichung" hidden value="taichung" v-model="cities">臺中市</label>
-                            <label class="b3"><input type="checkbox" name="彰化" hidden value="彰化" v-model="cities">彰化縣</label>
-                            <label class="b3"><input type="checkbox" name="苗栗" hidden value="苗栗" v-model="cities">苗栗縣</label>
-                        </fieldset>
-                        <fieldset>
-                            <legend>南部</legend>
-                            <label class="b3"><input type="checkbox" name="taichung" hidden value="taichung" v-model="cities">嘉義市</label>
-                            <label class="b3"><input type="checkbox" name="彰化" hidden value="彰化" v-model="cities">嘉義縣</label>
-                            <label class="b3"><input type="checkbox" name="苗栗" hidden value="苗栗" v-model="cities">臺南市</label>
-                        </fieldset>
-                        <fieldset>
-                            <legend>東部</legend>
-                            <label class="b3"><input type="checkbox" name="taichung" hidden value="taichung" v-model="cities">花蓮縣</label>
-                            <label class="b3"><input type="checkbox" name="彰化" hidden value="彰化" v-model="cities">臺東縣</label>
-                        </fieldset>
-                        <fieldset>
-                            <legend>離島</legend>
-                            <label class="b3"><input type="checkbox" name="taichung" hidden value="taichung" v-model="cities">澎湖縣</label>
-                            <label class="b3"><input type="checkbox" name="彰化" hidden value="彰化" v-model="cities">金門縣</label>
-                            <label class="b3"><input type="checkbox" name="彰化" hidden value="彰化" v-model="cities">連江縣</label>
-                        </fieldset>
-                    </div>
+        <div class='filter-option' @blur="controlMenu('option',false)" tabindex="-1">
+            <div class="text subt2">{{ optionSelected || '選擇城市'}}</div>
+            <img src="../assets/icon/tool/down.png" alt="縣市搜尋選單" class="icon switch" @click="switchMenu('option')"
+                srcset="">
+            <div class="options" :class="{ 'show': listName['option'] }">
+                <div class="input-group d-flex">
+                    <fieldset v-for="subGroup of optionGroup" :key='subGroup[subStructName]'>
+                        <legend>{{subGroup[subStructName]}}</legend>
+                        <label v-for="option of subGroup.options" :key="option.name" class="b3 d-block"
+                            :class="{'selected':selectedOptions.indexOf(option.value)>-1}">
+                            <input type="checkbox" hidden :value="option.value" v-model="selectedOptions">
+                            {{option.name}}
+                        </label>
+                    </fieldset>
                 </div>
             </div>
-            <div class='filter-category'>
-                <div class="text subt2">{{categorySelected || '分類'}}</div>
-                <img src="../assets/icon/tool/down.png" alt="" class="icon switch" @focus="switchOpts('category')" @blur="switchOpts('category')" tabindex="-1" srcset="">
-                <div class="options" :class="{'show':listName['category']}">
-                    <label class="b3"><input type="radio" name="category" hidden value="activity" v-model="category">活動</label>
-                    <label class="b3"><input type="radio" name="category" hidden value="senicspot" v-model="category">景點</label>
-                    <label class="b3"><input type="radio" name="category" hidden value="food" v-model="category">美食</label>
-                </div>
+        </div>
+        <div class='filter-category' @blur="controlMenu('category',false)" tabindex="-1">
+            <div class="text subt2">{{categorySelected || '分類'}}</div>
+            <img src="../assets/icon/tool/down.png" alt="類型搜尋選單" class="icon switch" @click="switchMenu('category')"
+                srcset="">
+            <div class="options" :class="{ 'show' : listName['category'] }">
+                <label v-for="classTag of categoryList" class="b3 d-block"
+                    :class="{ 'selected': selectedCategory.indexOf( classTag ) > -1 }" :key="classTag">
+                    <input :type="categoryInputType" name="category" hidden :value="classTag"
+                        v-model="selectedCategory">
+                    {{matchString[classTag] || classTag}}
+                </label>
             </div>
-            <input type="submit" value="搜尋">
-        </form>
+        </div>
+        <input type="submit" value="搜尋" @click.prevent="pageChange">
+    </form>
 </template>
 <script>
 export default {
@@ -68,33 +39,67 @@ export default {
     data(){
         return{
             uniqueID:Math.floor(Math.random()*100),
-            category:null,
-            cities:[],
+            selectedCategory:[],
+            selectedOptions:[],
             matchString:{
-                activity:'活動',
-                senicspot:'景點',
-                food:'美食'
+                Activity:'活動',
+                ScenicSpot:'景點',
+                Restaurant:'美食'
             },
             listName:{
-                city:false,
+                option:false,
                 category:false
             }
         }
     },
+    props:{
+        optionGroup:{type:Array,default(){
+            return [{
+                subgroupname:'No subgroup',
+                options:[{name:'no option',value:''}]
+            }];
+        }},
+        subStructName:{type:String,default:'subgroupname'},
+        categoryList:{type:Array,default(){return ['No category']}},
+        componentType:{type:String,default:'naviSearch'}
+    },
     computed:{
-        citySelected(){
-            return this.cities.length > 0 ? '已選' + this.cities.length + '區' : false;
+        optionSelected(){
+            return this.selectedOptions.length > 0 ? '已選' + this.selectedOptions.length + '種' : false;
         },
         categorySelected(){
-            return this.category ? this.matchString[this.category] : false;
+            return this.componentType == 'naviSearch' && this.selectedCategory.length > 0 ? this.matchString[this.selectedCategory]  
+            : this.selectedCategory.length > 0 ? '已選' + this.selectedCategory.length + '種' : false ;
+        },
+        categoryInputType(){
+            return this.componentType == 'naviSearch' ? 'radio' : 'checkbox';
         }
     },
     methods:{
         mountID(mountname){
             return mountname + this.uniqueID;
         },
-        switchOpts(val){
-            this.listName[val] = !this.listName[val];
+        switchMenu(type){
+            this.listName[type] = !this.listName[type];
+        },
+        controlMenu(type, val){
+            this.listName[type] = val;
+        },
+        pageChange() {
+            if (!(this.selectedCategory.length > 0) && !(this.selectedOptions.length > 0)) return;
+            let query ={
+                    naviSearch:{
+                        cities: '' + this.selectedOptions
+                    },
+                    themeAdvancedSearch:{
+                        class: '' + this.selectedCategory, cities: '' + this.selectedOptions
+                    }
+                };
+            let routeSet = { 
+                name: 'theme',
+                params: this.componentType == 'naviSearch' ? { category: this.selectedCategory, page: '1' } : this.$route.params, 
+                query: query[this.componentType] };
+            this.$router.push(routeSet);
         }
     }
 }
@@ -135,7 +140,7 @@ input[type='submit']{
     display: flex;
     align-items: center;
 }
-.filter-city{
+.filter-option{
     justify-content: flex-end;
 }
 .filter-category{
@@ -153,9 +158,11 @@ input[type='submit']{
     }
 }
 .options{
-    display: none;
+    opacity: 0;
+    pointer-events: none;
     &.show{
-        display: block;
+        opacity: 1;
+        pointer-events: all;
     }
     position: absolute;
     top: 64px;
@@ -195,5 +202,8 @@ label{
             &:active{
                 background-color: #ff5c00;
             }
+        &.selected {
+            background-color: #ff5c00;
+        }
 }
 </style>

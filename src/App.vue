@@ -17,14 +17,21 @@
 <script>
 import navi from '@/components/Nav.vue';
 import pagefooter from '@/components/Footer.vue';
+function deleteLocalStorage(){
+  localStorage.clear();
+}
 export default {
   name:'app',
   components:{
     navi,
     pagefooter
   },
-  onUnmounted(){
-    localStorage.clear();
+  mounted(){
+    window.addEventListener('beforeunload',deleteLocalStorage);
+  },
+  unmounted(){
+    console.log('data delete');
+    window.removeEventListener('beforeunload',deleteLocalStorage);
   }
 }
 </script>

@@ -30,7 +30,7 @@ let factoryStrategies = {
                     Organizer: item?.Organizer || 'no organizer',
                     Phone: String( item.Phone ).split( '、' )[0] || 'no phone number',
                     OpenTime: item?.OpenTime || (item?.StartTime ? String( item.StartTime ).split('T')[0] + '~' + String( item.EndTime ).split('T')[0] : undefined) || '無提供開放時段',
-                    ClassTags: truthyPushArray( [item?.Class1, item?.Class2, item?.Class3] ),
+                    ClassTags: truthyPushArray( [item?.Class,item?.Class1, item?.Class2, item?.Class3] ),
                     WebsiteUrl: item?.WebsiteUrl || '',
                     MapUrl: item?.MapUrl || '',
                     PictureUrl: urlMixedContentFixed( truthyPushArray( [item.Picture?.PictureUrl1, item.Picture?.PictureUrl2, item.Picture?.PictureUrl3] )) || '',

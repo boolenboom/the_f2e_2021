@@ -145,7 +145,7 @@ export default {
             this.runFetch();
         }
     },
-    mounted(){
+    created(){
         this.runFetch();
     }
 }

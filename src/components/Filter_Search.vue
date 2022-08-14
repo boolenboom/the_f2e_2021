@@ -2,9 +2,9 @@
     <form action="#" class="search-filter d-flex">
         <div class='filter-option' @blur="controlMenu('option',false)" tabindex="-1">
             <div class="text subt2">{{ optionSelected || '選擇城市'}}</div>
-            <img src="../assets/icon/tool/down.png" alt="縣市搜尋選單" class="icon switch" @click="switchMenu('option')"
-                srcset="">
-            <div class="options" :class="{ 'show': listName['option'] }">
+            <img src="../assets/icon/tool/down.png" class="icon switch" :class="{ 'turnUp' : listMenu['option'] }"
+                alt="縣市搜尋選單" @click="switchMenu('option')" srcset="">
+            <div class="options" :class="{ 'show': listMenu['option'] }">
                 <div class="input-group d-flex">
                     <fieldset v-for="subGroup of optionGroup" :key='subGroup[subStructName]'>
                         <legend>{{subGroup[subStructName]}}</legend>
@@ -19,9 +19,9 @@
         </div>
         <div class='filter-category' @blur="controlMenu('category',false)" tabindex="-1">
             <div class="text subt2">{{categorySelected || '分類'}}</div>
-            <img src="../assets/icon/tool/down.png" alt="類型搜尋選單" class="icon switch" @click="switchMenu('category')"
-                srcset="">
-            <div class="options" :class="{ 'show' : listName['category'] }">
+            <img src="../assets/icon/tool/down.png" class="icon switch" :class="{ 'turnUp' : listMenu['category'] }"
+                alt="類型搜尋選單" @click="switchMenu('category')" srcset="">
+            <div class="options" :class="{ 'show' : listMenu['category'] }">
                 <label v-for="classTag of categoryList" class="b3 d-block"
                     :class="{ 'selected': selectedCategory.indexOf( classTag ) > -1 }" :key="classTag">
                     <input :type="categoryInputType" name="category" hidden :value="classTag"
@@ -46,7 +46,7 @@ export default {
                 ScenicSpot:'景點',
                 Restaurant:'美食'
             },
-            listName:{
+            listMenu:{
                 option:false,
                 category:false
             }
@@ -80,13 +80,15 @@ export default {
             return mountname + this.uniqueID;
         },
         switchMenu(type){
-            this.listName[type] = !this.listName[type];
+            this.listMenu[type] = !this.listMenu[type];
         },
         controlMenu(type, val){
-            this.listName[type] = val;
+            this.listMenu[type] = val;
         },
         pageChange() {
             if (!(this.selectedCategory.length > 0) && !(this.selectedOptions.length > 0)) return;
+            this.listMenu.option = false;
+            this.listMenu.category = false;
             let query ={
                     naviSearch:{
                         cities: '' + this.selectedOptions
@@ -121,6 +123,10 @@ input[type='submit']{
     width: 44px;
     height: fit-content;
     padding: 8px;
+    transition: transform .3s ease;
+    &.turnUp{
+        transform: rotateX(180deg);
+    }
 }
 .switch{
     cursor: pointer;

@@ -83,7 +83,7 @@ export default {
         width: 100%;
         object-fit: cover;
     }
-    background-image: url('../assets/bg/No_image_0.5x.png');
+    background-image: url('../assets/bg/no_image.png');
     background-repeat: no-repeat;
     background-size: cover;
 }

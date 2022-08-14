@@ -111,7 +111,7 @@ export default {
         height: 100%;
         object-fit: cover;
     }
-    background-image: url('../assets/bg/No_image.png');
+    background-image: url('../assets/bg/no_image.png');
     background-repeat: no-repeat;
     background-size: cover;
 }

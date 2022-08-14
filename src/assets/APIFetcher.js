@@ -54,6 +54,9 @@ function fetcherGenerator( fetcher = {} ){
             } 
         }; 
     };
+    fetcher.setOptions = function(optionVal){
+        fetcher.option = optionVal;
+    }
     fetcher.setUrl = function( url ){
         fetcher.url = url;
     };
